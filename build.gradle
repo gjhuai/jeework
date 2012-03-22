@@ -1,0 +1,295 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url 'http://repo.springsource.org/plugins-release' }
+        maven { url 'http://10.229.14.10:8080/nexus/content/groups/public' }
+    }
+    dependencies {
+        //classpath 'org.springframework.build.gradle:docbook-reference-plugin:0.1.3'
+    }
+}
+
+configure(allprojects) {
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+
+    group = 'org.jeework'
+
+    sourceCompatibility=1.5
+    targetCompatibility=1.5
+
+    slf4jLog4jVersion = '1.5.10'
+
+    [compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:none']
+
+    sourceSets.test.resources.srcDirs = ['src/test/resources', 'src/test/java']
+
+    test.systemProperty("java.awt.headless", "true")
+
+    repositories {
+        mavenLocal()
+        maven { url 'http://10.229.14.10:8080/nexus/content/groups/public' }
+        maven { url "http://repo.springsource.org/libs-release" }
+        maven { url "http://repo.springsource.org/ebr-maven-external" }
+    }
+
+    dependencies {
+        testCompile "junit:junit:4.9"
+        testCompile "org.easymock:easymock:2.5.1"
+        testCompile "org.hamcrest:hamcrest-all:1.1"
+    }
+
+    // servlet-api (2.5) and tomcat-servlet-api (3.0) classpath entries should not be
+    // exported to dependent projects in Eclipse to avoid false compilation errors due
+    // to changing APIs across these versions
+    eclipse.classpath.file.whenMerged { classpath ->
+        classpath.entries.findAll { entry -> entry.path.contains('servlet-api') }*.exported = false
+    }
+}
+
+configure(subprojects) { subproject ->
+    //apply from: "${rootProject.projectDir}/publish-maven.gradle"
+
+    jar {
+        manifest.attributes['Implementation-Title'] = subproject.name
+        manifest.attributes['Implementation-Version'] = subproject.version
+
+        from("${rootProject.projectDir}/src/dist") {
+            include "license.txt"
+            include "notice.txt"
+            into "META-INF"
+            expand(copyright: new Date().format('yyyy'), version: project.version)
+        }
+    }
+
+    javadoc {
+        options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        options.author = true
+        options.header = project.name
+        //options.overview = "${projectDir}/src/main/java/overview.html"
+    }
+
+    task sourcesJar(type: Jar, dependsOn:classes) {
+        classifier = 'sources'
+        from sourceSets.main.allJava
+    }
+
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
+    }
+}
+
+
+project('jeework-core') {
+    description = 'Jeework Core'
+    dependencies {
+        compile "commons-logging:commons-logging:1.1.1"
+        //compile("org.aspectj:aspectjweaver:1.6.8", optional)
+        compile("net.sf.jopt-simple:jopt-simple:3.0") { dep ->
+            //optional dep
+            exclude group: 'org.apache.ant', module: 'ant'
+        }
+        compile("log4j:log4j:1.2.15") { dep ->
+            //optional dep
+            exclude group: 'javax.mail', module: 'mail'
+            exclude group: 'javax.jms', module: 'jms'
+            exclude group: 'com.sun.jdmk', module: 'jmxtools'
+            exclude group: 'com.sun.jmx', module: 'jmxri'
+        }
+        testCompile "xmlunit:xmlunit:1.2"
+        testCompile "org.codehaus.woodstox:wstx-asl:3.2.7"
+    }
+}
+
+project('jeework-security') {
+    description = 'Jeework Security'
+    dependencies {
+        compile project(":jeework-core")
+        //compile("javax.el:el-api:1.0", provided)
+        //compile("javax.inject:javax.inject:1", provided)
+        //compile("cglib:cglib-nodep:2.2", optional)
+    }
+}
+
+project("jeework-generator") {
+    description = 'Jeework Generator'
+    asmVersion = '2.2.3'
+
+    configurations {
+        asm
+        jarjar
+    }
+    dependencies {
+        asm "asm:asm:${asmVersion}@jar", "asm:asm-commons:${asmVersion}@jar"
+        jarjar 'com.googlecode.jarjar:jarjar:1.1'
+    }
+
+    task repackageAsm(type: Jar) { jar ->
+        jar.baseName = "asm-repack"
+        jar.version = asmVersion
+
+        doLast() {
+            project.ant {
+                taskdef name: "jarjar", classname: "com.tonicsystems.jarjar.JarJarTask",
+                    classpath: configurations.jarjar.asPath
+                jarjar(destfile: archivePath, index: "true", filesetmanifest: "merge") {
+                    configurations.asm.each { jarfile ->
+                        zipfileset(src: jarfile)
+                    }
+                    rule(pattern: 'org.objectweb.asm.**', result: 'org.springframework.asm.@1')
+                }
+            }
+        }
+    }
+
+    jar {
+        dependsOn repackageAsm
+        from(zipTree(repackageAsm.archivePath)) {
+            exclude 'META-INF/INDEX.LIST'
+        }
+    }
+}
+
+configure(rootProject) {
+    description = 'Spring Framework'
+
+    //apply plugin: 'docbook-reference'
+/*
+    reference {
+        sourceDir = file('src/reference/docbook')
+    }
+*/
+    // don't publish the default jar for the root project
+    configurations.archives.artifacts.clear()
+
+    dependencies { // for integration tests
+        //testCompile project(":spring-test")
+        //testCompile project(":spring-webmvc-portlet")
+        //testCompile "org.hibernate:hibernate-core:4.1.0.Final"
+        testCompile "javax.servlet:servlet-api:2.5"
+    }
+
+    task api(type: Javadoc) {
+        group = 'Documentation'
+        description = 'Generates aggregated Javadoc API documentation.'
+        title = "${rootProject.description} ${version} API"
+        options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        options.author = true
+        options.header = rootProject.description
+        options.overview = 'src/api/overview.html'
+        options.links(
+            'http://docs.jboss.org/jbossas/javadoc/4.0.5/connector'
+        )
+        source subprojects.collect { project ->
+            project.sourceSets.main.allJava
+        }
+        destinationDir = new File(buildDir, "api")
+        classpath = files(subprojects.collect { project ->
+            project.sourceSets.main.compileClasspath
+        })
+        maxMemory = '1024m'
+    }
+
+    task docsZip(type: Zip) {
+        group = 'Distribution'
+        classifier = 'docs'
+        description = "Builds -${classifier} archive containing api and reference " +
+            "for deployment at static.springframework.org/spring-framework/docs."
+
+        from('src/dist') {
+            include 'changelog.txt'
+        }
+
+        from (api) {
+            into 'api'
+        }
+/*
+        from (reference) {
+            into 'reference'
+        }
+        */
+    }
+
+    task schemaZip(type: Zip) {
+        group = 'Distribution'
+        classifier = 'schema'
+        description = "Builds -${classifier} archive containing all " +
+            "XSDs for deployment at static.springframework.org/schema."
+
+        subprojects.each { subproject ->
+            def Properties schemas = new Properties();
+
+            subproject.sourceSets.main.resources.find {
+                it.path.endsWith('META-INF/spring.schemas')
+            }?.withInputStream { schemas.load(it) }
+
+            for (def key : schemas.keySet()) {
+                def shortName = key.replaceAll(/http.*schema.(.*).spring-.*/, '$1')
+                assert shortName != key
+                File xsdFile = subproject.sourceSets.main.resources.find {
+                    it.path.endsWith(schemas.get(key))
+                }
+                assert xsdFile != null
+                into (shortName) {
+                    from xsdFile.path
+                }
+            }
+        }
+    }
+
+    task distZip(type: Zip, dependsOn: [docsZip, schemaZip]) {
+        group = 'Distribution'
+        classifier = 'dist'
+        description = "Builds -${classifier} archive, containing all jars and docs, " +
+                      "suitable for community download page."
+
+        baseDir = "${project.name}-${project.version}";
+
+        from('src/dist') {
+            include 'readme.txt'
+            include 'license.txt'
+            include 'notice.txt'
+            into "${baseDir}"
+            expand(copyright: new Date().format('yyyy'), version: project.version)
+        }
+
+        from(zipTree(docsZip.archivePath)) {
+            into "${baseDir}/docs"
+        }
+
+        from(zipTree(schemaZip.archivePath)) {
+            into "${baseDir}/schema"
+        }
+
+        subprojects.each { subproject ->
+            into ("${baseDir}/libs") {
+                from subproject.jar
+                if (subproject.tasks.findByPath('sourcesJar')) {
+                    from subproject.sourcesJar
+                }
+                if (subproject.tasks.findByPath('javadocJar')) {
+                    from subproject.javadocJar
+                }
+            }
+        }
+    }
+
+    artifacts {
+        archives docsZip
+        archives schemaZip
+        archives distZip
+    }
+
+    task wrapper(type: Wrapper) {
+        description = 'Generates gradlew[.bat] scripts'
+        gradleVersion = '1.0-milestone-9'
+    }
+}
+

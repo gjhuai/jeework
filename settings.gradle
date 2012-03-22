@@ -1,0 +1,6 @@
+rootProject.name = 'jeework'
+
+include 'jeework-core'
+include 'jeework-generator'
+include 'jeework-security'
+

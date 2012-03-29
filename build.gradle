@@ -1,8 +1,9 @@
 buildscript {
+    def localMavenRepo = new File('d:/repo').toURL().toString()
     repositories {
-        mavenLocal()
-        maven { url 'http://repo.springsource.org/plugins-release' }
+        mavenRepo url: localMavenRepo
         maven { url 'http://10.229.14.10:8080/nexus/content/groups/public' }
+        maven { url 'http://repository.primefaces.org' }
     }
     dependencies {
         //classpath 'org.springframework.build.gradle:docbook-reference-plugin:0.1.3'
@@ -11,44 +12,87 @@ buildscript {
 
 configure(allprojects) {
     apply plugin: 'java'
+    apply plugin: 'maven'
     apply plugin: 'eclipse'
     apply plugin: 'idea'
 
     group = 'org.jeework'
 
-    sourceCompatibility=1.5
-    targetCompatibility=1.5
+    sourceCompatibility=1.6
+    targetCompatibility=1.6
 
     slf4jLog4jVersion = '1.5.10'
+    //project.ext["slf4jLog4jVersion"] = '1.5.10'
+    
+    def localMavenRepo = new File('d:/repo').toURL().toString()
 
     [compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:none']
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
     sourceSets.test.resources.srcDirs = ['src/test/resources', 'src/test/java']
 
     test.systemProperty("java.awt.headless", "true")
 
     repositories {
-        mavenLocal()
+        mavenRepo url: localMavenRepo
         maven { url 'http://10.229.14.10:8080/nexus/content/groups/public' }
-        maven { url "http://repo.springsource.org/libs-release" }
-        maven { url "http://repo.springsource.org/ebr-maven-external" }
+        maven { url 'http://repository.primefaces.org' }
     }
 
     dependencies {
+		compile("commons-lang:commons-lang:2.6")
+        compile "commons-codec:commons-codec:1.5"
+        compile "commons-collections:commons-collections:3.2.1"
+ 		compile "commons-configuration:commons-configuration:1.7"
+		compile "commons-fileupload:commons-fileupload:1.2.1"
+		compile "commons-io:commons-io:1.4"
+		compile "commons-beanutils:commons-beanutils:1.8.0"
+		compile "commons-digester:commons-digester:1.7"
+		compile "commons-pool:commons-pool:1.5.6"
+		compile "com.google.guava:guava:r09"
+        compile "hirondelle:date4j:1.2.0"
+        
+        compile("javax:javaee-api:6.0")
+        compile("javax.faces:jsf-api:2.0")
+        compile "org.primefaces:primefaces:3.0.1"
+        
+		compile "com.cedarsoft.serialization:jdom:1.0.3"
+		compile "ch.qos.cal10n:cal10n-api:0.7.4"
+		compile "rapid:xsqlbuilder:1.0.4"
+		compile "org.apache.poi:poi:3.6"
+		compile "net.sf.jasperreports:jasperreports:4.0.2"
+		compile "velocity:velocity:1.5"
+		compile "velocity:velocity-dep:1.5"
+		
+		compile "com.wcs.cas:casclient:3.2.0"
+		compile "com.alibaba:fastjson:1.1.15"
+		compile "org.slf4j:slf4j-api:1.6.1"
+		compile "org.slf4j:slf4j-ext:1.6.1"
+		compile "org.slf4j:slf4j-log4j12:1.6.1"
+		compile "org.apache.shiro:shiro-core:1.2.0"
+		compile "org.apache.shiro:shiro-web:1.2.0"
+		compile "org.apache.shiro:shiro-ehcache:1.2.0-SNAPSHOT"
+		compile "org.apache.shiro:shiro-faces:2.0-SNAPSHOT"
+
         testCompile "junit:junit:4.9"
-        testCompile "org.easymock:easymock:2.5.1"
-        testCompile "org.hamcrest:hamcrest-all:1.1"
+        //testCompile "org.easymock:easymock:2.5.1"
+        //testCompile "org.hamcrest:hamcrest-all:1.1"
+        //testCompile "org.jboss.arquillian.junit:arquillian-junit-container:1.0.0.CR5"
     }
 
     // servlet-api (2.5) and tomcat-servlet-api (3.0) classpath entries should not be
     // exported to dependent projects in Eclipse to avoid false compilation errors due
     // to changing APIs across these versions
+    /*
     eclipse.classpath.file.whenMerged { classpath ->
         classpath.entries.findAll { entry -> entry.path.contains('servlet-api') }*.exported = false
     }
+    */
+    
 }
 
 configure(subprojects) { subproject ->
+    
     //apply from: "${rootProject.projectDir}/publish-maven.gradle"
 
     jar {
@@ -63,10 +107,12 @@ configure(subprojects) { subproject ->
         }
     }
 
+
     javadoc {
         options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
         options.author = true
         options.header = project.name
+        options.encoding = 'UTF-8'
         //options.overview = "${projectDir}/src/main/java/overview.html"
     }
 
@@ -90,21 +136,32 @@ configure(subprojects) { subproject ->
 project('jeework-core') {
     description = 'Jeework Core'
     dependencies {
-        compile "commons-logging:commons-logging:1.1.1"
+        //compile("javax:javaee-api:6.0")
+        //provided "javax:javaee-api:6.0"
+        //compile("javax.faces:jsf-api:2.0")
+        //provided "javax.faces:jsf-api:2.0"
+/*		provided "dom4j:dom4j:1.6.1"
+		
+		
+		provided "javax.validation:validation-api:1.0.0.GA"
+		*/
+		
+        //compile "commons-logging:commons-logging:1.1.1"
         //compile("org.aspectj:aspectjweaver:1.6.8", optional)
-        compile("net.sf.jopt-simple:jopt-simple:3.0") { dep ->
+/*        compile("net.sf.jopt-simple:jopt-simple:3.0") { dep ->
             //optional dep
             exclude group: 'org.apache.ant', module: 'ant'
-        }
+        }*/
+		/*
         compile("log4j:log4j:1.2.15") { dep ->
             //optional dep
             exclude group: 'javax.mail', module: 'mail'
             exclude group: 'javax.jms', module: 'jms'
             exclude group: 'com.sun.jdmk', module: 'jmxtools'
             exclude group: 'com.sun.jmx', module: 'jmxri'
-        }
-        testCompile "xmlunit:xmlunit:1.2"
-        testCompile "org.codehaus.woodstox:wstx-asl:3.2.7"
+        }*/
+        //testCompile "xmlunit:xmlunit:1.2"
+        //testCompile "org.codehaus.woodstox:wstx-asl:3.2.7"
     }
 }
 
@@ -118,19 +175,44 @@ project('jeework-security') {
     }
 }
 
+project('jeework-report') {
+    description = 'Jeework Report'
+    dependencies {
+        compile project(":jeework-core")
+        compile project(":jeework-security")
+        //compile("javax.el:el-api:1.0", provided)
+        //compile("javax.inject:javax.inject:1", provided)
+        //compile("cglib:cglib-nodep:2.2", optional)
+    }
+}
+
+project('jeework-showcase') {
+    description = 'Jeework Showcase'
+    dependencies {
+        compile project(":jeework-core")
+        compile project(":jeework-security")
+        compile project(":jeework-report")
+        //compile("javax.el:el-api:1.0", provided)
+        //compile("javax.inject:javax.inject:1", provided)
+        //compile("cglib:cglib-nodep:2.2", optional)
+    }
+}
+
 project("jeework-generator") {
     description = 'Jeework Generator'
     asmVersion = '2.2.3'
+    //project.ext["asmVersion"] = '2.2.3'
 
     configurations {
         asm
         jarjar
     }
     dependencies {
-        asm "asm:asm:${asmVersion}@jar", "asm:asm-commons:${asmVersion}@jar"
-        jarjar 'com.googlecode.jarjar:jarjar:1.1'
+        //asm "asm:asm:${asmVersion}@jar", "asm:asm-commons:${asmVersion}@jar"
+        //jarjar 'com.googlecode.jarjar:jarjar:1.1'
     }
 
+/*
     task repackageAsm(type: Jar) { jar ->
         jar.baseName = "asm-repack"
         jar.version = asmVersion
@@ -155,10 +237,11 @@ project("jeework-generator") {
             exclude 'META-INF/INDEX.LIST'
         }
     }
+    */
 }
 
 configure(rootProject) {
-    description = 'Spring Framework'
+    description = 'Jee Work'
 
     //apply plugin: 'docbook-reference'
 /*
@@ -166,6 +249,7 @@ configure(rootProject) {
         sourceDir = file('src/reference/docbook')
     }
 */
+
     // don't publish the default jar for the root project
     configurations.archives.artifacts.clear()
 
@@ -173,14 +257,15 @@ configure(rootProject) {
         //testCompile project(":spring-test")
         //testCompile project(":spring-webmvc-portlet")
         //testCompile "org.hibernate:hibernate-core:4.1.0.Final"
-        testCompile "javax.servlet:servlet-api:2.5"
+        //testCompile "javax.servlet:servlet-api:2.5"
     }
-
+/*
     task api(type: Javadoc) {
         group = 'Documentation'
         description = 'Generates aggregated Javadoc API documentation.'
         title = "${rootProject.description} ${version} API"
         options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        options.encoding = 'UTF-8'
         options.author = true
         options.header = rootProject.description
         options.overview = 'src/api/overview.html'
@@ -196,7 +281,7 @@ configure(rootProject) {
         })
         maxMemory = '1024m'
     }
-
+*/
     task docsZip(type: Zip) {
         group = 'Distribution'
         classifier = 'docs'
@@ -206,11 +291,11 @@ configure(rootProject) {
         from('src/dist') {
             include 'changelog.txt'
         }
-
+/*
         from (api) {
             into 'api'
         }
-/*
+
         from (reference) {
             into 'reference'
         }
@@ -250,7 +335,8 @@ configure(rootProject) {
         description = "Builds -${classifier} archive, containing all jars and docs, " +
                       "suitable for community download page."
 
-        baseDir = "${project.name}-${project.version}";
+        baseDir = "${project.name}-${project.version}"
+        //project.ext["baseDir"] = "${project.name}-${project.version}";
 
         from('src/dist') {
             include 'readme.txt'

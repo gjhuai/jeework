@@ -4,6 +4,7 @@ buildscript {
         mavenRepo url: localMavenRepo
         maven { url 'http://10.229.14.10:8080/nexus/content/groups/public' }
         maven { url 'http://repository.primefaces.org' }
+        maven { url 'https://repository.apache.org/content/groups/public/'}
     }
     dependencies {
         //classpath 'org.springframework.build.gradle:docbook-reference-plugin:0.1.3'
@@ -32,7 +33,17 @@ configure(allprojects) {
     sourceSets.test.resources.srcDirs = ['src/test/resources', 'src/test/java']
 
     test.systemProperty("java.awt.headless", "true")
-
+	
+	eclipse {
+		classpath {
+			//customizing the classes output directory:
+			defaultOutputDir = file('build/classes/main')
+			//default settings for dependencies sources/javadoc download:
+			downloadSources = false
+			downloadJavadoc = false
+		}
+    }
+    
     repositories {
         mavenRepo url: localMavenRepo
         maven { url 'http://10.229.14.10:8080/nexus/content/groups/public' }
@@ -52,8 +63,8 @@ configure(allprojects) {
 		compile "com.google.guava:guava:r09"
         compile "hirondelle:date4j:1.2.0"
         
-        compile("javax:javaee-api:6.0")
-        compile("javax.faces:jsf-api:2.0")
+        compile "javax:javaee-api:6.0"
+        compile "javax.faces:jsf-api:2.0"
         compile "org.primefaces:primefaces:3.0.1"
         
 		compile "com.cedarsoft.serialization:jdom:1.0.3"
@@ -83,11 +94,11 @@ configure(allprojects) {
     // servlet-api (2.5) and tomcat-servlet-api (3.0) classpath entries should not be
     // exported to dependent projects in Eclipse to avoid false compilation errors due
     // to changing APIs across these versions
-    /*
+	    
     eclipse.classpath.file.whenMerged { classpath ->
         classpath.entries.findAll { entry -> entry.path.contains('servlet-api') }*.exported = false
     }
-    */
+    
     
 }
 
@@ -187,6 +198,9 @@ project('jeework-report') {
 }
 
 project('jeework-showcase') {
+	apply plugin: 'war'
+    apply plugin: 'eclipse-wtp'
+	
     description = 'Jeework Showcase'
     dependencies {
         compile project(":jeework-core")

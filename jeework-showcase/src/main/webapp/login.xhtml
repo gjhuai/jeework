@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+<TITLE>登录</TITLE>
+<link rel="shortcut icon" href="favicon.ico" />
+
+<script language="JavaScript">
+function login(val){
+	document.getElementById("name").value=val;
+   // form1.name1.value=val;
+}
+</script>
+<style>
+
+.input_1 {
+	FONT-SIZE: 20px;
+	HEIGHT: 30px;
+	width:150px;
+	MARGIN-BOTTOM: 5px;
+}
+body{TEXT-ALIGN: center;} 
+ 
+</style>
+
+</h:head>
+<h:body>
+
+	<p>请选择用户</p>
+	<h:form id="form1" prependId="false">
+
+		<h:inputHidden id="name" value="#{loginBean.userName}"  />
+
+		<h:messages />
+		<h:commandButton id="admin" value="admin" action="#{loginBean.userLogin}" onclick="login(this.id)" styleClass="input_1"/>
+		<br/>
+		<h:commandButton id="xiafei" value="xiafei" action="#{loginBean.userLogin}" onclick="login(this.id)" styleClass="input_1"/>
+		<br/>
+		<h:commandButton id="JMS" value="JMS" action="#{loginBean.userLogin}" onclick="login(this.id)" styleClass="input_1"/>
+		<br/>
+
+	</h:form>
+
+</h:body>
+</html>

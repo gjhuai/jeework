@@ -1,0 +1,90 @@
+<report>
+
+	<name>Customer Report</name>
+	<title>Customer Report For Company XYZ</title>
+	<image>customer.gif</image>
+	<header>Customers</header>
+	<sql>
+		select first_name, last_name, city, state, email, age, count(b.order_id) as no_order from sample.customer as a inner join sample.customer_order as b on (a.customer_id=b.customer_id) group by first_name, last_name, city, state, email, age
+	</sql>
+	<fields>
+		<field>
+			<name>last_name</name>
+			<clazzType>java.lang.String</clazzType>
+		</field>
+
+		<field>
+			<name>first_name</name>
+			<clazzType>java.lang.String</clazzType>
+		</field>
+
+		<field>
+			<name>city</name>
+			<clazzType>java.lang.String</clazzType>
+		</field>
+
+		<field>
+			<name>state</name>
+			<clazzType>java.lang.String</clazzType>
+		</field>
+
+		<field>
+			<name>email</name>
+			<clazzType>java.lang.String</clazzType>
+		</field>
+
+		<field>
+			<name>age</name>
+			<clazzType>java.lang.Integer</clazzType>
+		</field>
+
+		<field>
+			<name>no_order</name>
+			<clazzType>java.lang.Integer</clazzType>
+		</field>
+	</fields>
+
+	<columns>
+
+		<column>
+			<name>Name</name>
+			<width>130</width>
+			<alignment>Left</alignment>
+			<clazzType>java.lang.String</clazzType>
+			<expression>$F{last_name} + ", " + $F{first_name}</expression>
+		</column>
+
+		<column>
+			<name>Location</name>
+			<width>130</width>
+			<alignment>Left</alignment>
+			<clazzType>java.lang.String</clazzType>
+			<expression>$F{city} + ", " + $F{state}</expression>
+		</column>
+
+		<column>
+			<name>Email</name>
+			<width>150</width>
+			<alignment>Left</alignment>
+			<clazzType>java.lang.String</clazzType>
+			<expression>$F{email}</expression>
+		</column>
+
+		<column>
+			<name>Age</name>
+			<width>30</width>
+			<alignment>Left</alignment>
+			<clazzType>java.lang.Integer</clazzType>
+			<expression>$F{age}</expression>
+		</column>
+
+		<column>
+			<name>No. of Orders</name>
+			<width>80</width>
+			<alignment>Left</alignment>
+			<clazzType>java.lang.Integer</clazzType>
+			<expression>$F{no_order}</expression>
+		</column>
+
+	</columns>
+</report>

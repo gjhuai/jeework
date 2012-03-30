@@ -1,0 +1,84 @@
+<report>
+
+	<name>Order Report</name>
+	<title>Order Report For Company XYZ</title>
+	<image>order.gif</image>
+	<header>Orders</header>
+	<sql>
+		select order_id, status, placed_by, b.first_name, b.last_name, b.email from sample.customer_order as a inner join sample.customer as b on (a.customer_id=b.customer_id) order by status
+	</sql>
+	<fields>
+		<field>
+			<name>order_id</name>
+			<clazzType>java.lang.Integer</clazzType>
+		</field>
+
+		<field>
+			<name>status</name>
+			<clazzType>java.lang.String</clazzType>
+		</field>
+
+		<field>
+			<name>placed_by</name>
+			<clazzType>java.lang.String</clazzType>
+		</field>
+
+		<field>
+			<name>first_name</name>
+			<clazzType>java.lang.String</clazzType>
+		</field>
+
+		<field>
+			<name>last_name</name>
+			<clazzType>java.lang.String</clazzType>
+		</field>
+
+		<field>
+			<name>email</name>
+			<clazzType>java.lang.String</clazzType>
+		</field>
+	</fields>
+
+	<columns>
+		<column>
+			<name>Order Id</name>
+			<width>60</width>
+			<alignment>Left</alignment>
+			<clazzType>java.lang.Integer</clazzType>
+			<expression>$F{order_id}</expression>
+		</column>
+
+		<column>
+			<name>Status</name>
+			<width>100</width>
+			<alignment>Left</alignment>
+			<clazzType>java.lang.String</clazzType>
+			<expression>$F{status}</expression>
+		</column>
+
+		<column>
+			<name>Placed By</name>
+			<width>110</width>
+			<alignment>Left</alignment>
+			<clazzType>java.lang.String</clazzType>
+			<expression>$F{placed_by}</expression>
+		</column>
+
+		<column>
+			<name>Customer</name>
+			<width>115</width>
+			<alignment>Left</alignment>
+			<clazzType>java.lang.String</clazzType>
+			<expression>$F{last_name} + ", " + $F{first_name}</expression>
+		</column>
+
+		<column>
+			<name>Email</name>
+			<width>135</width>
+			<alignment>Left</alignment>
+			<clazzType>java.lang.String</clazzType>
+			<expression>$F{email}</expression>
+		</column>
+
+	</columns>
+</report>

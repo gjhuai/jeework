@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<label>$name,,$gender</label>
+
+<jasperReport name="BasicReport" pageWidth="565" pageHeight="842" columnWidth="545" leftMargin="10" rightMargin="10" topMargin="30" bottomMargin="30">
+	<reportFont name="Arial_Normal" isDefault="true" fontName="Arial" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false" />
+	<reportFont name="Arial_Bold" isDefault="false" fontName="Arial" size="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false" />
+	<reportFont name="Arial_Italic" isDefault="false" fontName="Arial" size="12" isBold="false" isItalic="true" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Oblique" pdfEncoding="Cp1252" isPdfEmbedded="false" />
+	<parameter name="BaseDir" class="java.io.File"></parameter>
+	<parameter name="ImageFile" class="java.lang.String"></parameter>
+	<queryString>
+		<![CDATA[$sql]]>
+	</queryString>
+	
+	#foreach ($field in $fieldList)
+		<field name="$field.name" class="$field.clazzName"></field>
+	#end
+
+	<title>
+	#set( $baseDir = '$P{BaseDir}' )
+	#set( $imageFile = '$P{ImageFile}' )
+		<band height="50">
+			<line>
+				<reportElement x="0" y="0" width="520" height="1" />
+				<graphicElement />
+			</line>
+			<image scaleImage="Clip" vAlign="Middle">
+				<reportElement x="0" y="5" width="32" height="32" />
+				<graphicElement />
+				<imageExpression class="java.io.File">
+					<![CDATA[new File($baseDir, $imageFile)]]>
+				</imageExpression>
+			</image>
+			
+			<staticText>
+				<reportElement x="40" y="10" width="420" height="30" />
+				<textElement textAlignment="Left">
+					<font reportFont="Arial_Normal" size="22" />
+				</textElement>
+				<text>
+					<![CDATA[$title]]>
+				</text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="20">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="5" width="520" height="15" forecolor="#ffffff" backcolor="#666666" />
+				<textElement textAlignment="Left">
+					<font reportFont="Arial_Bold" />
+				</textElement>
+				<text>
+					<![CDATA[$headerString]]>
+				</text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20">
+		#set( $x = 0 )
+		#foreach ($column in $columnList)
+			<staticText>
+				<reportElement mode="Opaque" x="$x" y="5" width="$column.width" height="15" forecolor="#ffffff" backcolor="#bbbbbb" />
+				<textElement textAlignment="Left">
+					<font reportFont="Arial_Bold" />
+				</textElement>
+				<text>
+					<![CDATA[$column.name]]>
+				</text>
+			</staticText>
+			#set( $x = $x + $column.width )
+		#end
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+		
+		#set( $x = 0 )
+		#foreach ($column in $columnList)
+			<textField>
+				<reportElement x="$x" y="4" width="$column.width" height="15" />
+				<textElement textAlignment="$column.alignment" />
+				<textFieldExpression class="$column.clazzType">
+					<![CDATA[$column.expression]]>
+				</textFieldExpression>
+			</textField>
+			#set( $x = $x + $column.width )
+		#end
+			<line>
+				<reportElement positionType="Float" x="0" y="19" width="520" height="1" forecolor="#808080" />
+				<graphicElement />
+			</line>
+		</band>
+	</detail>
+	
+	<pageFooter>
+	#set( $pageNumber = '$V{PAGE_NUMBER}' )
+		<band height="40">
+			<line>
+				<reportElement x="0" y="10" width="520" height="1" />
+				<graphicElement />
+			</line>
+			<textField>
+				<reportElement x="200" y="20" width="85" height="15" />
+				<textElement textAlignment="Right" />
+				<textFieldExpression class="java.lang.String">
+					<![CDATA["Page " + String.valueOf($pageNumber)]]>
+				</textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="285" y="20" width="75" height="15" />
+				<textElement textAlignment="Left" />
+				<textFieldExpression class="java.lang.String">
+					<![CDATA[" of " + String.valueOf($pageNumber)]]>
+				</textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	
+	<summary>
+	#set( $reportCount = '$V{REPORT_COUNT}' )
+		<band height="35">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="175" y="20" width="165" height="15" />
+				<textElement textAlignment="Center">
+					<font reportFont="Arial_Italic" />
+				</textElement>
+				<textFieldExpression class="java.lang.String">
+					<![CDATA["There were " + 
+			String.valueOf($reportCount) + 
+			"  records on this report."]]>
+				</textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
+

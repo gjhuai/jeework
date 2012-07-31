@@ -12,8 +12,6 @@ import javax.persistence.Query;
 
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -33,8 +31,7 @@ import com.wcs.base.util.Validate;
  *
  * @author chris
  */
-public abstract class EntityService extends AbstractEntityService {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+public abstract class EntityService extends CrudEntityService {
 
     // -----------------------------------  List 查询  --------------------------------------//
 
@@ -63,7 +60,7 @@ public abstract class EntityService extends AbstractEntityService {
      * private Map<String,Object> map = Maps.newHashMapWithExpectedSize(5);
      * //set, get...
      * <p/>
-     * List list = entityService.findByMap(sql.toString(), map);
+     * List list = entityService.findXsqlList(sql.toString(), map);
      * <p/>
      * </p>
      *
@@ -71,10 +68,9 @@ public abstract class EntityService extends AbstractEntityService {
      * @param filterMap 从页面上以Map形式传过来的属性集合.
      * @return 分页的查询结果.
      */
-    
-    public <X> List<X> findListByFilter(final String xsql, final Map<String, Object> filterMap) {
+    public <X> List<X> findXsqlList(final String xsql, final Map<String, Object> filterMap) {
         Validate.hasText(xsql, "xsql不能为空");
-        Query q = createQueryByMap(xsql, filterMap);
+        Query q = createXsqlQuery(xsql, filterMap);
 
         return q.getResultList();
     }
@@ -86,7 +82,7 @@ public abstract class EntityService extends AbstractEntityService {
      * <p/>
      * 本函数只能自动处理简单的jpql语句,复杂的jpql查询请另行编写count语句查询.
      */
-    protected long countHqlResult(final String jpql, final Object... values) {
+    protected Long countHqlResult(final String jpql, final Object... values) {
         String countHql = prepareCountHql(jpql);
 
         try {
@@ -107,7 +103,7 @@ public abstract class EntityService extends AbstractEntityService {
         String countHql = prepareCountHql(jpql);
 
         try {
-            Long count = findUnique(countHql.trim(), values);
+            Long count = findUnique(countHql, values);
             return count;
         } catch (Exception e) {
             throw new RuntimeException("jpql can't be auto count, jpql is:" + countHql, e);
@@ -216,7 +212,7 @@ public abstract class EntityService extends AbstractEntityService {
      * xsql的写法参考：http://code.google.com/p/rapid-xsqlbuilder/，例如：
      * String xsql = "select b from Book b where 1=1"  + " /~ and name = {name}~/ " ;
      * 位于/~ ~/之间的语句为可选部分，{name}表示变量值，当 map 中没有 name值或name为空（null或“”）时，/~ ~/之间的语句被忽略。
-     * filterMap 为jsf页面与Bean的传值容器，命名方法示例：EQL_id, LIKES_name等
+     * xsqlFilterMap 为jsf页面与Bean的传值容器，命名方法示例：EQL_id, LIKES_name等
      * <p/>
      * 用法例子：
      * <p/>
@@ -241,16 +237,15 @@ public abstract class EntityService extends AbstractEntityService {
      * </p>
      *
      * @param xsql      基于 xsqlbuilder 样式的类SQL语句.
-     * @param filterMap 从页面上以Map形式传过来的属性集合.
+     * @param xsqlFilterMap 从页面上以Map形式传过来的属性集合.
      * @return 分页的查询结果.  以 PrimeFaces 的LazyDataModel 形式返回。
-     * @see com.wcs.common.controller.permissions.UserBean#search()
      */
     @SuppressWarnings("unchecked")
-    public <T extends IdEntity> LazyDataModel<T> findPageByFilter(final String xsql, final Map<String, Object> filterMap) {
+    public <T extends IdEntity> LazyDataModel<T> findXsqlPage(final String xsql, final Map<String, Object> xsqlFilterMap) {
         //Map<String, Object> paramMap = Maps.newHashMapWithExpectedSize(5);
         Map<String, Object> paramMap = new HashMap<String,Object>();
         
-        String jpql = this.buildJpqlAndParams(xsql, filterMap, paramMap);
+        String jpql = this.buildJpqlAndParams(xsql, xsqlFilterMap, paramMap);
 
         return this.findPage(jpql, paramMap);
     }
@@ -279,7 +274,7 @@ public abstract class EntityService extends AbstractEntityService {
      * @param filterMap 参数集合，从页面上以Map形式传过来的属性集合.
      * @return 返回 javax.persistence.Query 对象
      */
-    public Query createQueryByMap(String xsql, Map<String, Object> filterMap) {
+    public Query createXsqlQuery(String xsql, Map<String, Object> filterMap) {
         Map<String, Object> paramMap = Maps.newHashMapWithExpectedSize(5);
         String jpql = this.buildJpqlAndParams(xsql, filterMap, paramMap);
 
@@ -293,7 +288,7 @@ public abstract class EntityService extends AbstractEntityService {
      * @param filterMap 参数集合，从页面上以Map形式传过来的属性集合.
      * @param paramMap  回调的参数列表，Map的key剔除了前缀
      * @return JPQL的查询语句
-     * @see StatelessEntityService#findPageByFilter(String, java.util.Map)
+     * @see StatelessEntityService#findXsqlPage
      */
     public String buildJpqlAndParams(String xsql, Map<String, Object> filterMap, Map<String, Object> paramMap) {
         // 得到需要动态构建的字段
@@ -321,19 +316,17 @@ public abstract class EntityService extends AbstractEntityService {
         	if (hasIt) tmpMap.put(kv.getKey(),kv.getValue());
         }
         //Assert.isTrue(avialableKeys.size()== filterMap.size());
-        this.convertMap(tmpMap, paramMap);
+        paramMap = this.convertMap(tmpMap);
 
         // 构建 JPQL 语句
         XsqlBuilder builder = new XsqlBuilder();
-        String jpql = builder.generateHql(xsql, paramMap).getXsql().toString();
-
-        return jpql;
+        return builder.generateHql(xsql, paramMap).getXsql().toString();
     }
     
-    private Map<String,Object> convertMap(Map<String, Object> filterMap,Map<String, Object> paramMap){
-    	//Map<String, Object> paramMap = Maps.newHashMap();
+    private Map<String,Object> convertMap(Map<String, Object> xsqlFilterMap){
+    	Map<String, Object> paramMap = Maps.newHashMap();
         
-    	for (Map.Entry<String, Object> kv : filterMap.entrySet()){
+    	for (Map.Entry<String, Object> kv : xsqlFilterMap.entrySet()){
 			// 获取属性的 Name (key)
 			String filterName = kv.getKey();
 			String propertyName = StringUtils.substringAfter(filterName, "_");

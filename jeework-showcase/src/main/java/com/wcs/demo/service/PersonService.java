@@ -47,7 +47,7 @@ public class PersonService {
 	        .append(" /~ and p.sex like {sex} ~/ ")
 	        .append(" /~ and p.birthday >= {startBirthday} ~/")
 	        .append(" /~ and p.birthday <= {endBirthday} ~/");
-	    return entityService.findPageByFilter(xsql.toString(), filterMap);
+	    return entityService.findXsqlPage(xsql.toString(), filterMap);
 	}
 
 	//-------------------- setter & getter --------------------//

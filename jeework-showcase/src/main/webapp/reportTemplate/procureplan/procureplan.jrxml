@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+	name="PurchaseReport" pageWidth="1075" pageHeight="842" columnWidth="555"
+	leftMargin="0" rightMargin="20" topMargin="30" bottomMargin="30"
+	isFloatColumnFooter="true" whenNoDataType="AllSectionsNoDetail">
+	
+	
+	<style name="Sans_Normal" isDefault="true" fontName="Arial"
+		fontSize="12" isBold="false" isItalic="false" isUnderline="false"
+		isStrikeThrough="false" />
+	<style name="Table">
+		<box>
+			<pen lineColor="black"/>
+			<topPen lineWidth="0.5" />
+			<leftPen lineWidth="0.5" />
+		</box>
+	</style>
+	<style name="TableHeader" mode="Opaque" backcolor="#FFFFFF" />
+	<style name="TableFooter" mode="Opaque" backcolor="#FFFFFF" />
+	
+	<subDataset name="TableData">
+		<field name="materialName" class="java.lang.String"/>
+	    <field name="amount" class="java.lang.Double"/>
+	    <field name="price" class="java.lang.Double"/>
+	    <field name="todayFigure" class="java.lang.Double"/>
+	    <field name="totalAmount" class="java.lang.Double"/>
+	    <field name="totalPrice" class="java.lang.Double"/>
+	    <field name="historyTotalFigure" class="java.lang.Double"/>
+	    
+	    <variable name="amountSum" class="java.lang.Double" resetType="Report"  calculation="Sum">
+		       <variableExpression><![CDATA[$F{amount}]]></variableExpression>
+	    </variable>
+	    <variable name="priceSum" class="java.lang.Double" resetType="Report"  calculation="Sum">
+		       <variableExpression><![CDATA[$F{price}]]></variableExpression>
+	    </variable>
+	    <variable name="todayFigureSum" class="java.lang.Double" resetType="Report"  calculation="Sum">
+		       <variableExpression><![CDATA[$F{todayFigure}]]></variableExpression>
+	    </variable>
+	     <variable name="totalAmountSum" class="java.lang.Double" resetType="Report"  calculation="Sum">
+		       <variableExpression><![CDATA[$F{totalAmount}]]></variableExpression>
+	    </variable>
+	    <variable name="totalPriceSum" class="java.lang.Double" resetType="Report"  calculation="Sum">
+		       <variableExpression><![CDATA[$F{totalPrice}]]></variableExpression>
+	    </variable>
+	    <variable name="historyTotalFigureSum" class="java.lang.Double" resetType="Report"  calculation="Sum">
+		       <variableExpression><![CDATA[$F{historyTotalFigure}]]></variableExpression>
+	    </variable>
+    </subDataset>
+    <parameter name="ReportTitle" class="java.lang.String"/>
+	<parameter name="BaseDir" class="java.io.File"/>
+    <parameter name="TableDataSource" class="net.sf.jasperreports.engine.JRDataSource" />
+    
+   <title>
+		<band height="150">
+				
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="515" height="50" backcolor="#E0E0E0"/>
+					<textElement textAlignment="Right">
+						<font size="22"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{ReportTitle}]]></textFieldExpression>
+				</textField>
+	
+			<componentElement>
+				<reportElement x="0" y="50" width="555" height="100"
+					style="Table" />
+				<c:table
+					xmlns:c="http://jasperreports.sourceforge.net/jasperreports/components"
+					xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="TableData">
+						<dataSourceExpression>$P{TableDataSource}</dataSourceExpression>
+					</datasetRun>
+					<c:column width="100">
+						<c:columnHeader rowSpan="2" height="30" style="TableHeader">
+							<box leftPadding="10">
+								<pen lineColor="black" />
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30">
+								</reportElement>
+								<textElement verticalAlignment="Middle">
+									<font size="12" isBold="true" />
+								</textElement>
+								<text><![CDATA[物料]]></text>
+							</staticText>
+						</c:columnHeader>
+						<c:columnFooter height="15" style="TableFooter">
+							<box leftPadding="10">
+								<pen lineColor="black" />
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="15">
+								</reportElement>
+								<textElement verticalAlignment="Middle">
+									<font size="12" isBold="true" />
+								</textElement>
+								<text><![CDATA[合计]]></text>
+							</staticText>
+						</c:columnFooter>
+						<c:detailCell height="15">
+							<box leftPadding="10">
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="90" height="15">
+								</reportElement>
+								<textFieldExpression class="java.lang.String"><![CDATA[$F{materialName}]]></textFieldExpression>
+							</textField>
+						</c:detailCell>
+					</c:column>
+					
+					
+					<c:columnGroup width="300">
+						<c:columnHeader height="15" style="TableHeader">
+							<box>
+								<pen lineColor="black" />
+								<leftPen lineWidth="0.5" />
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="300" height="15">
+								</reportElement>
+								<textElement textAlignment="Center">
+									<font size="12" isBold="true" />
+								</textElement>
+								<text><![CDATA[当日收货]]></text>
+							</staticText>
+						</c:columnHeader>
+						<c:column width="100">
+							<c:columnHeader height="15" style="TableHeader">
+								<box leftPadding="10">
+									<pen lineColor="black" />
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+								</box>
+								<staticText>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textElement>
+										<font isBold="true" />
+									</textElement>
+									<text><![CDATA[数量(吨)]]></text>
+								</staticText>
+							</c:columnHeader>
+							<c:columnFooter height="15" style="TableFooter">
+								<box leftPadding="10">
+									<pen lineColor="black" />
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textElement>
+										<font size="12" isBold="true" />
+									</textElement>
+									<textFieldExpression class="java.lang.Double"><![CDATA[$V{amountSum}]]></textFieldExpression>
+								</textField>
+							</c:columnFooter>
+							<c:detailCell height="15">
+								<box leftPadding="10">
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textFieldExpression class="java.lang.Double"><![CDATA[$F{amount}]]></textFieldExpression>
+								</textField>
+							</c:detailCell>
+						</c:column>
+						
+						<c:column width="100">
+							<c:columnHeader height="15" style="TableHeader">
+								<box leftPadding="10">
+									<pen lineColor="black" />
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+								</box>
+								<staticText>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textElement>
+										<font isBold="true" />
+									</textElement>
+									<text><![CDATA[单价(元/吨)]]></text>
+								</staticText>
+							</c:columnHeader>
+							<c:columnFooter height="15" style="TableFooter">
+								<box leftPadding="10">
+									<pen lineColor="black" />
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textElement>
+										<font size="12" isBold="true" />
+									</textElement>
+									<textFieldExpression class="java.lang.Double"><![CDATA[$V{priceSum}]]></textFieldExpression>
+								</textField>
+							</c:columnFooter>
+							<c:detailCell height="15">
+								<box leftPadding="10">
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textFieldExpression class="java.lang.Double"><![CDATA[$F{price}]]></textFieldExpression>
+								</textField>
+							</c:detailCell>
+						</c:column>
+						
+						<c:column width="100">
+							<c:columnHeader height="15" style="TableHeader">
+								<box leftPadding="10">
+									<pen lineColor="black" />
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+								</box>
+								<staticText>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textElement>
+										<font isBold="true" />
+									</textElement>
+									<text><![CDATA[金额(元)]]></text>
+								</staticText>
+							</c:columnHeader>
+							<c:columnFooter height="15" style="TableFooter">
+								<box leftPadding="10">
+									<pen lineColor="black" />
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textElement>
+										<font size="12" isBold="true" />
+									</textElement>
+									<textFieldExpression class="java.lang.Double"><![CDATA[$V{todayFigureSum}]]></textFieldExpression>
+								</textField>
+							</c:columnFooter>
+							<c:detailCell height="15">
+								<box leftPadding="10">
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textFieldExpression class="java.lang.Double"><![CDATA[$F{todayFigure}]]></textFieldExpression>
+								</textField>
+							</c:detailCell>
+						</c:column>
+					</c:columnGroup>
+					
+					
+					
+					
+					<c:columnGroup width="300">
+						<c:columnHeader height="15" style="TableHeader">
+							<box>
+								<pen lineColor="black" />
+								<leftPen lineWidth="0.5" />
+								<bottomPen lineWidth="0.5" />
+								<rightPen lineWidth="0.5" />
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="300" height="15">
+								</reportElement>
+								<textElement textAlignment="Center">
+									<font size="12" isBold="true" />
+								</textElement>
+								<text><![CDATA[累积收货]]></text>
+							</staticText>
+						</c:columnHeader>
+						<c:column width="100">
+							<c:columnHeader height="15" style="TableHeader">
+							<box>
+								<pen lineColor="black" />
+								<leftPen lineWidth="0.5" />
+								<bottomPen lineWidth="0.5" />
+							</box>
+								<staticText>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textElement>
+										<font isBold="true" />
+									</textElement>
+									<text><![CDATA[数量(吨)]]></text>
+								</staticText>
+							</c:columnHeader>
+							<c:columnFooter height="15" style="TableFooter">
+								<box>
+								<pen lineColor="black" />
+								<leftPen lineWidth="0.5" />
+								<bottomPen lineWidth="0.5" />
+							</box>
+								<textField>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textElement>
+										<font size="12" isBold="true" />
+									</textElement>
+									<textFieldExpression class="java.lang.Double"><![CDATA[$V{totalAmountSum}]]></textFieldExpression>
+								</textField>
+							</c:columnFooter>
+							<c:detailCell height="15">
+								<box leftPadding="10">
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textFieldExpression class="java.lang.Double"><![CDATA[$F{totalAmount}]]></textFieldExpression>
+								</textField>
+							</c:detailCell>
+						</c:column>
+						
+						<c:column width="100">
+							<c:columnHeader height="15" style="TableHeader">
+								<box>
+								<pen lineColor="black" />
+								<leftPen lineWidth="0.5" />
+								<bottomPen lineWidth="0.5" />
+							</box>
+								<staticText>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textElement>
+										<font isBold="true" />
+									</textElement>
+									<text><![CDATA[单价(元/吨)]]></text>
+								</staticText>
+							</c:columnHeader>
+							<c:columnFooter height="15" style="TableFooter">
+								<box>
+								<pen lineColor="black" />
+								<leftPen lineWidth="0.5" />
+								<bottomPen lineWidth="0.5" />
+							</box>
+								<textField>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textElement>
+										<font size="12" isBold="true" />
+									</textElement>
+									<textFieldExpression class="java.lang.Double"><![CDATA[$V{priceSum}]]></textFieldExpression>
+								</textField>
+							</c:columnFooter>
+							<c:detailCell height="15">
+								<box leftPadding="10">
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textFieldExpression class="java.lang.Double"><![CDATA[$F{price}]]></textFieldExpression>
+								</textField>
+							</c:detailCell>
+						</c:column>
+						
+						<c:column width="100">
+							<c:columnHeader height="15" style="TableHeader">
+								<box leftPadding="10">
+									<pen lineColor="black" />
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+									<rightPen lineWidth="0.5" />
+								</box>
+								<staticText>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textElement textAlignment="Center">
+										<font isBold="true" />
+									</textElement>
+									<text><![CDATA[金额(元)]]></text>
+								</staticText>
+							</c:columnHeader>
+							<c:columnFooter height="15" style="TableFooter">
+								<box leftPadding="10">
+									<pen lineColor="black" />
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+									<rightPen lineWidth="0.5" />
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textElement>
+										<font size="12" isBold="true" />
+									</textElement>
+									<textFieldExpression class="java.lang.Double"><![CDATA[$V{historyTotalFigureSum}]]></textFieldExpression>
+								</textField>
+							</c:columnFooter>
+							<c:detailCell height="15">
+								<box leftPadding="10">
+									<pen lineColor="black" />
+									<leftPen lineWidth="0.5" />
+									<bottomPen lineWidth="0.5" />
+									<rightPen lineWidth="0.5" />
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="90" height="15">
+									</reportElement>
+									<textElement textAlignment="Right">
+										<font size="12"  />
+									</textElement>
+									<textFieldExpression class="java.lang.Double"><![CDATA[$F{historyTotalFigure}]]></textFieldExpression>
+								</textField>
+							</c:detailCell>
+						</c:column>
+					</c:columnGroup>
+					
+				</c:table>
+			</componentElement>
+		</band>
+	</title>
+	
+</jasperReport>

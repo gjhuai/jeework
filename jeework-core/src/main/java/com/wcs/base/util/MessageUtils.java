@@ -85,8 +85,6 @@ public class MessageUtils {
 		String mess = MessageUtils.getMessage(key, values);
 		MessageUtils.addMessage(widgetId, mess, FacesMessage.SEVERITY_WARN);
 	}
-	
-	
 
 	public static void addMessage(String clientId, String summary) {
 		MessageUtils.addMessage(clientId, summary, FacesMessage.SEVERITY_WARN);
@@ -152,5 +150,40 @@ public class MessageUtils {
 		return mess;
 	}
 
-	
+    /**
+     *
+     * @param paramName
+     * @param methodName
+     * @return
+     *
+     */
+    public static String buildAssertMessage(String paramName, String methodName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Parameter '");
+        sb.append(paramName);
+        sb.append("' canot null, When do ");
+        sb.append(methodName);
+        sb.append(".");
+        return sb.toString();
+    }
+
+
+    /**
+     *
+     * @param methodName
+     * @param t
+     * @return
+     *
+     */
+    public static String buildExceptionMessage(String methodName, Throwable t) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Hit Exception: Can not ");
+        sb.append(methodName);
+        sb.append(" ");
+        sb.append(t.getMessage());
+        sb.append(".");
+
+
+        return sb.toString();
+    }
 }

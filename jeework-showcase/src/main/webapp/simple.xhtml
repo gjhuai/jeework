@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<f:view contentType="text/html">
+	<h:head>
+		<f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
+            <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+			<title>欢迎使用《农产品收购系统v1.0》</title>
+        </f:facet>
+        
+		<!-- CSS & JS -->
+		<script type="text/javascript" src="#{request.contextPath}/template/js/jquery.timer.js"/>
+		<script type="text/javascript" src="#{request.contextPath}/template/js/jquery.easing.1.3.js"/>
+		<script type="text/javascript"
+			src="#{request.contextPath}/template/js/jquery.tooltip.js"></script>
+		<script type="text/javascript" src="#{request.contextPath}/template/js/main.js"/>
+		<link href="#{request.contextPath}/template/css/primefaces/theme.css" rel="stylesheet" type="text/css"/>
+		<link href="#{request.contextPath}/template/css/default.css" rel="stylesheet" type="text/css"/>
+		<link href="#{request.contextPath}/styles/defaultprimeface.css" rel="stylesheet" type="text/css" />
+		<link href="#{request.contextPath}/styles/syntaxhighlighter.css" rel="stylesheet" type="text/css" />
+
+	</h:head>
+	<h:body>
+   	<h:form id="personForm">
+        	<p:panel styleClass="panel1">
+            	<f:facet name="header">
+                    <img src="#{request.contextPath}/images/icons/tabTitle.gif" alt=""/>
+                    <h:outputLabel value="人员查询    |    "/>
+                    <h:outputLink value="#{request.contextPath}/faces/person/input.xhtml">
+                        <h:outputText value="添加人员"/>
+                    </h:outputLink>
+                </f:facet>
+
+                <p:fieldset>
+                    <h:panelGrid columns="4">
+				    	姓名：<h:inputText value="#{personBean.filterMap['LIKES_name']}"/>
+				        性别：<h:selectOneMenu  value="#{personBean.filterMap['EQS_sex']}" >
+        						<f:selectItem itemLabel="--请选择--" itemValue="" />
+        						<f:selectItem itemLabel="男" itemValue="男" />
+        						<f:selectItem itemLabel="女" itemValue="女" />
+        				</h:selectOneMenu>
+				        出生日期：<p:calendar value="#{personBean.filterMap['EQD_startBirthday']}"/> ~ <p:calendar value="#{personBean.filterMap['EQD_endBirthday']}"/>
+                     	<p:commandButton id="btn_person_Search" value="查询" actionListener="#{personBean.search}" update="personDataPanel" image="ui-icon ui-icon-search"/>
+                     </h:panelGrid>
+                </p:fieldset>
+				<br/>
+
+				<p:outputPanel id="personDataPanel">
+					<p:dataTable id="personTable" var="person" value="#{personBean.lazyModel}" paginator="true" rows="5" lazy="true"  paginatorPosition="bottom"
+                             paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" selectionMode="single" onRowSelectUpdate="display">
+						<f:facet name="header">人员列表</f:facet>
+                    	<p:column headerText="姓名" >
+                    		<h:outputText value="#{person.name}"/>
+                    	</p:column>
+                    	<p:column headerText="出生日期" >
+                    		<h:outputText value="#{person.birthday}"/>
+                    	</p:column>
+                    	<p:column headerText="性别" >
+                        	<h:outputText value="#{person.sex}"/>
+                    	</p:column>
+                    	<p:column headerText="国籍">
+                        	<h:outputText value="#{person.nationality}"/>
+                    	</p:column>
+                    	<p:column headerText="VIP">
+                        	<h:outputText value="#{person.vip}"/>
+                    	</p:column>
+                  		<p:column headerText="电话">
+                        	<h:outputText value="#{person.phone}"/>
+                   		</p:column>
+                    	<p:column headerText="地址">
+                        	<h:outputText value="#{person.address}"/>
+                    	</p:column>
+                    	<p:column headerText="邮箱">
+                        	<h:outputText value="#{person.email}"/>
+                   		</p:column>
+                   		<p:column headerText="备注">
+                        	<h:outputText value="#{person.remarks}"/>
+                   		</p:column>
+                    	<p:column headerText="创建时间">
+                        	<h:outputText value="#{person.createdDatetime}"/>
+                    	</p:column>
+                   		<p:column headerText="操作" style="width:120px; text-align:center;">
+                    		<p:commandButton id="btn_person_View" update=":personForm:display" oncomplete="personDialog.show()" image="ui-icon ui-icon-search" title="查看">
+                            	<f:setPropertyActionListener value="#{person}" target="#{personBean.instance}" />
+                            	<f:setPropertyActionListener value="#{false}" target="#{personBean.editMode}" />
+                        	</p:commandButton>
+                        	<p:commandButton id="btn_person_Edit" update=":personForm:display" oncomplete="personDialog.show()" image="ui-icon ui-icon-pencil" title="修改">
+                            	<f:setPropertyActionListener value="#{person}" target="#{personBean.instance}"/>
+                            	<f:setPropertyActionListener value="#{true}" target="#{personBean.editMode}"/>
+                        	</p:commandButton>
+                        	<p:commandButton id="btn_person_Delete" update=":personForm:display" oncomplete="confirmation.show()" image="ui-icon ui-icon-close" title="删除">
+                            	<f:setPropertyActionListener value="#{person}" target="#{personBean.instance}"/>
+                        	</p:commandButton>
+                    	</p:column>
+                	</p:dataTable>
+				</p:outputPanel>
+
+				<p:dialog header="人员信息" widgetVar="personDialog" resizable="false" id="authorDlg" width="600" showEffect="fade" hideEffect="explode" modal="true">
+					<p:messages id="msg" />
+              		<h:panelGrid id="display" columns="2" cellpadding="5" cellspacing="1" styleClass="style1" rowClasses="row1,row2" columnClasses="column1,column2" footerClass="footer1">
+                        <h:outputText value="姓名：" />
+            			<h:panelGroup>
+               				<h:outputText value="#{personBean.instance.name}"  rendered="#{!personBean.editMode}"/>
+                		    <p:inputText value="#{personBean.instance.name}" rendered="#{personBean.editMode}" required="true" requiredMessage="人员的姓名不能为空！"/>
+                		    <h:outputText style="color:red;" value="  *" rendered="#{personBean.editMode}" />
+                        </h:panelGroup>
+
+                        <h:outputText value="出生日期：" />
+            			<h:panelGroup>
+               				<h:outputText value="#{personBean.instance.birthday}" style="font-weight:bold" rendered="#{!personBean.editMode}"/>
+                		    <p:calendar value="#{personBean.instance.birthday}" rendered="#{personBean.editMode}" label="Model"/>
+                        </h:panelGroup>
+
+                        <h:outputText value="性别：" />
+            			<h:panelGroup>
+               				<h:outputText value="#{personBean.instance.sex}" style="font-weight:bold" rendered="#{!personBean.editMode}"/>
+                            <h:selectOneMenu  value="#{personBean.instance.sex}" rendered="#{personBean.editMode}" label="Model">
+        						<f:selectItem itemLabel="--请选择--" itemValue="" />
+        						<f:selectItem itemLabel="男" itemValue="男" />
+        						<f:selectItem itemLabel="女" itemValue="女" />
+        				    </h:selectOneMenu>
+                        </h:panelGroup>
+
+                        <h:outputText value="国籍：" />
+                        <h:panelGroup>
+               				<h:outputText value="#{personBean.instance.nationality}" style="font-weight:bold" rendered="#{!personBean.editMode}"/>
+                            <h:selectOneRadio  value="#{personBean.instance.nationality}" rendered="#{personBean.editMode}" styleClass="selectOneRadio">
+        						<f:selectItem itemLabel="中国" itemValue="中国" />
+            					<f:selectItem itemLabel="美国" itemValue="美国" />
+            					<f:selectItem itemLabel="西班牙" itemValue="西班牙" />
+        				    </h:selectOneRadio>
+                        </h:panelGroup>
+
+                        <h:outputText value="VIP：" />
+                        <h:panelGroup>
+               			    <h:outputText value="#{personBean.instance.vip}" style="font-weight:bold" rendered="#{!personBean.editMode}"/>
+                		    <h:selectBooleanCheckbox value="#{personBean.instance.vip}" rendered="#{personBean.editMode}" styleClass="selectBooleanCheckbox"/>
+                        </h:panelGroup>
+
+                        <h:outputText value="电话：" />
+            			<h:panelGroup>
+               			    <h:outputText value="#{personBean.instance.phone}" style="font-weight:bold" rendered="#{!personBean.editMode}"/>
+                		    <p:inputText value="#{personBean.instance.phone}" rendered="#{personBean.editMode}" label="Model"/>
+                        </h:panelGroup>
+
+                        <h:outputText value="地址：" />
+            			<h:panelGroup>
+               			    <h:outputText value="#{personBean.instance.address}" style="font-weight:bold" rendered="#{!personBean.editMode}"/>
+                		    <p:inputText value="#{personBean.instance.address}" rendered="#{personBean.editMode}"  label="Model"/>
+                        </h:panelGroup>
+
+                        <h:outputText value="邮箱：" />
+            			<h:panelGroup>
+               			    <h:outputText value="#{personBean.instance.email}" style="font-weight:bold" rendered="#{!personBean.editMode}"/>
+               			    <h:panelGroup>
+                		    	<p:inputText value="#{personBean.instance.email}" rendered="#{personBean.editMode}" label="Model" maxlength="50" >
+                		    		<f:validateRegex pattern=".+[@].+[.].+" />
+                		    	</p:inputText>
+                		    	<h:outputText style="color:red;" value="  *" rendered="#{personBean.editMode}" />
+                		    </h:panelGroup>
+                        </h:panelGroup>
+
+                        <h:outputText value="备注：" />
+            			<h:panelGroup>
+               			    <h:outputText value="#{personBean.instance.remarks}" style="font-weight:bold" rendered="#{!personBean.editMode}"/>
+                		    <p:inputTextarea value="#{personBean.instance.remarks}" rendered="#{personBean.editMode}" styleClass="textarea_420" maxHeight="120"/>
+                        </h:panelGroup>
+
+                        <h:outputText value="创建时间：" rendered="#{!personBean.editMode}" />
+            			<h:panelGroup>
+               				<h:outputText value="#{personBean.instance.createdDatetime}" style="font-weight:bold" rendered="#{!personBean.editMode}"/>
+                        </h:panelGroup>
+
+                        <f:facet name="footer">
+                            <p:outputPanel layout="block" style="text-align:center">
+                            	<p:commandButton id="btn_person_Save" value="保存" actionListener="#{personBean.save}" update="personDataPanel, msg"  rendered="#{personBean.editMode}"
+                            				     oncomplete="handleComplete(personDialog, args);" title="保存" image="ui-icon ui-icon-disk"/>
+								<p:commandButton id="btn_person_Cancel" value="#{personBean.editMode ? '取消' : '关闭'}" onclick="personDialog.hide()" title="取消" image="ui-icon ui-icon-cancel"/>
+                            </p:outputPanel>
+                        </f:facet>
+                    </h:panelGrid>
+                </p:dialog>
+
+                <p:confirmDialog message="是否删除此人员" header="信息确认" severity="alert" widgetVar="confirmation">
+                	<p:commandButton id="btn_person_Confirm" value="确定" actionListener="#{personBean.delete}" update="personDataPanel" oncomplete="confirmation.hide()"/>
+                    <p:commandButton id="btn_confirmDialog_Cancel" value="取消" onclick="confirmation.hide()" type="button"/>
+                </p:confirmDialog>
+         	</p:panel>
+        </h:form>
+
+	</h:body>
+</f:view>
+</html>

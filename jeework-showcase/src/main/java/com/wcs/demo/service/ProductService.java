@@ -27,14 +27,14 @@ import com.wcs.demo.model.Product;
 @Stateless
 public class ProductService {
 	@Inject
-	public StatelessEntityService entityService;
+	public StatelessEntityService es;
 	
     /**
      * 查询所有的商品信息
      * @return List<Product>
      */
     public List<Product> search() {
-    	List<Product> list = entityService.findAll(Product.class);
+    	List<Product> list = es.findAll(Product.class);
     	
 		return  list;	
 	}	
@@ -52,14 +52,14 @@ public class ProductService {
 	        .append(" /~ and p.price >= {smallPrice} ~/")
 	        .append(" /~ and p.price <= {bigPrice} ~/");
 	    
-	    return entityService.findPageByFilter(xsql.toString(), filterMap);
+	    return es.findXsqlPage(xsql.toString(), filterMap);
 	}
 	
 	
 	//-------------------- setter & getter --------------------//
 	
 	public void setEntityService(StatelessEntityService entityService) {
-		this.entityService = entityService;
+		this.es = entityService;
 	}
 	
 

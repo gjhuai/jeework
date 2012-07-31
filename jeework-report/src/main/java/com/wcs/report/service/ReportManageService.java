@@ -66,7 +66,7 @@ public class ReportManageService {
 	        .append(" /~ and rm.reportMode = {reportMode} ~/")
 	        .append(" /~ and rm.reportCategory = {reportCategory} ~/");
 	    
-	    return entityService.findPageByFilter(xsql.toString(), filterMap);
+	    return entityService.findXsqlPage(xsql.toString(), filterMap);
 	}
 	
 	/**

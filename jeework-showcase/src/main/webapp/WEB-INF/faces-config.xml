@@ -18,17 +18,12 @@
 		</resource-bundle>
 	</application>
 	
-    <factory> 
+<!--     <factory> 
 	  <exception-handler-factory> 
 	    com.wcs.base.exception.jsf.ExceptionHandlerFactory 
 	  </exception-handler-factory> 
-	</factory>
-	 
-	<validator>
-		<validator-id>doubleValidation</validator-id>
-		<validator-class>com.wcs.ncp.common.util.DoubleValidation</validator-class>
-	</validator>
-	
+	</factory> -->
+
 	
 	<lifecycle>
 	<!--<phase-listener>com.wcs.base.util.SessionTimeOutListener</phase-listener>

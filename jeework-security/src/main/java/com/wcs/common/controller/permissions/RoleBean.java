@@ -200,7 +200,7 @@ public class RoleBean extends PerimissionsConversationManager implements Seriali
     public String search() {
         StringBuilder sql = new StringBuilder("from Role role where 1=1 ");
         sql.append(" /~ and role.roleName like {roleName}~/ ");
-        this.lazyModel = this.entityService.findPageByFilter(sql.toString(), this.queryMap);
+        this.lazyModel = this.entityService.findXsqlPage(sql.toString(), this.queryMap);
         return LIST_PAGE;
 
     }

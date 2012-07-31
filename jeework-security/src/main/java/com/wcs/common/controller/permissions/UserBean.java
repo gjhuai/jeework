@@ -227,7 +227,7 @@ public class UserBean extends ViewBaseBean<User> {
 
         StringBuilder sql = new StringBuilder("from User u where 1=1");
         sql.append(" /~ and u.name like  {name}~/ ");
-        this.lazyModel = this.entityService.findPageByFilter(sql.toString(), this.queryMap);
+        this.lazyModel = this.entityService.findXsqlPage(sql.toString(), this.queryMap);
 
         return LIST_PAGE;
     }

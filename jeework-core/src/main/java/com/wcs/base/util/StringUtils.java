@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
+import com.google.common.base.Joiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -464,30 +465,6 @@ public abstract class StringUtils extends org.apache.commons.lang.StringUtils {
         // Convenience methods for working with formatted Strings
         //---------------------------------------------------------------------
 
-
-        /**
-         * Quote the given String with single quotes.
-         * @param str the input String (e.g. "myString")
-         * @return the quoted String (e.g. "'myString'"),
-         * or <code>null<code> if the input was <code>null</code>
-         */
-        public static String quote(String str) {
-                return (str != null ? "'" + str + "'" : null);
-        }
-
-
-        /**
-         * Turn the given Object into a String with single quotes
-         * if it is a String; keeping the Object as-is else.
-         * @param obj the input Object (e.g. "myString")
-         * @return the quoted String (e.g. "'myString'"),
-         * or the input object as-is if not a String
-         */
-        public static Object quoteIfString(Object obj) {
-                return (obj instanceof String ? quote((String) obj) : obj);
-        }
-
-
         /**
          * Unqualify a string qualified by a '.' dot character. For example,
          * "this.name.is.qualified", returns "qualified".
@@ -677,7 +654,7 @@ public abstract class StringUtils extends org.apache.commons.lang.StringUtils {
                 }
 
 
-                return prefix + collectionToDelimitedString(pathElements, FOLDER_SEPARATOR);
+                return prefix + join(pathElements, FOLDER_SEPARATOR);
         }
 
 
@@ -1131,7 +1108,7 @@ public abstract class StringUtils extends org.apache.commons.lang.StringUtils {
          * @param suffix the String to end each element with
          * @return the delimited String
          */
-        public static String collectionToDelimitedString(Collection coll, String delim, String prefix, String suffix) {
+        public static String join(Collection coll, String delim, String prefix, String suffix) {
                 if (CollectionUtils.isEmpty(coll)) {
                         return "";
                 }
@@ -1154,8 +1131,8 @@ public abstract class StringUtils extends org.apache.commons.lang.StringUtils {
          * @param delim the delimiter to use (probably a ",")
          * @return the delimited String
          */
-        public static String collectionToDelimitedString(Collection coll, String delim) {
-                return collectionToDelimitedString(coll, delim, "", "");
+        public static String join(Collection coll, String delim) {
+                return join(coll, delim, "", "");
         }
 
 
@@ -1165,8 +1142,8 @@ public abstract class StringUtils extends org.apache.commons.lang.StringUtils {
          * @param coll the Collection to display
          * @return the delimited String
          */
-        public static String collectionToCommaDelimitedString(Collection coll) {
-                return collectionToDelimitedString(coll, ",");
+        public static String join(Collection coll) {
+                return join(coll, ",");
         }
 
 
@@ -1234,21 +1211,6 @@ public abstract class StringUtils extends org.apache.commons.lang.StringUtils {
                 return strOut;
         }
 
-
-        /**
-         *
-         * Copy from org.apache.commons.validator.GenericValidator.
-         *
-         * @param value
-         * @return
-         *
-         *
-         */
-        public static boolean isBlankOrNull(String value) {
-                return ((value == null) || (value.trim().length() == 0));
-        }
-
-
         public static String toString(Object obj) {
                 if (obj == null)
                         return null;
@@ -1305,7 +1267,6 @@ public abstract class StringUtils extends org.apache.commons.lang.StringUtils {
                 }
                 return result.toString();
         }
-
 
         private static boolean isSubClassOf(Class objClass, String className) {
                 do {
@@ -1370,50 +1331,4 @@ public abstract class StringUtils extends org.apache.commons.lang.StringUtils {
                 return result.toString();
         }
 
-
-        /**
-         *
-         * @param paramName
-         * @param methodName
-         * @return
-         *
-         */
-        public static String buildAssertMessage(String paramName, String methodName) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("Parameter '");
-                sb.append(paramName);
-                sb.append("' canot null, When do ");
-                sb.append(methodName);
-                sb.append(".");
-                return sb.toString();
-        }
-
-
-        /**
-         *
-         * @param methodName
-         * @param t
-         * @return
-         *
-         */
-        public static String buildExceptionMessage(String methodName, Throwable t) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("Hit Exception: Can not ");
-                sb.append(methodName);
-                sb.append(" ");
-                sb.append(t.getMessage());
-                sb.append(".");
-
-
-                return sb.toString();
-        }
-
-
-        /**
-         * @param value
-         * @return
-         */
-        public static String safeString(String value) {
-                return value == null ? "" : value;
-        }
 }

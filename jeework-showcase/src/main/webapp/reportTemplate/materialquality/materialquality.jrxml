@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+	name="materialQualityReport" pageWidth="1075" pageHeight="842" columnWidth="500"
+	leftMargin="0" rightMargin="20" topMargin="30" bottomMargin="30"
+	isFloatColumnFooter="true" whenNoDataType="AllSectionsNoDetail">
+	
+	
+	<style name="Sans_Normal" isDefault="true" fontName="Arial"
+		fontSize="12" isBold="false" isItalic="false" isUnderline="false"
+		isStrikeThrough="false" />
+	<style name="Table">
+		<box>
+			<pen lineColor="red" lineWidth="1" />
+		</box>
+	</style>
+	<style name="TableHeader" mode="Opaque" backcolor="gray" />
+	<style name="TableFooter" mode="Opaque" backcolor="lightGray" />
+	
+	<subDataset name="TableData">
+		<field name="materialQulityType" class="java.lang.String"/>
+		<field name="yearOrMonth" class="java.lang.String"/>
+	    <field name="moisture" class="java.lang.Double"/>
+	    <field name="impurity" class="java.lang.Double"/>
+	    <field name="density"  class="java.lang.Double"/>
+	    <field name="damage"   class="java.lang.Double"/>
+    </subDataset>
+    <parameter name="ReportTitle" class="java.lang.String"/>
+	<parameter name="BaseDir" class="java.io.File"/>
+    <parameter name="TableDataSource" class="net.sf.jasperreports.engine.JRDataSource" />
+    
+   <title>
+		<band height="150">
+				
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="515" height="50" backcolor="#E0E0E0"/>
+					<textElement textAlignment="Right">
+						<font size="22"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{ReportTitle}]]></textFieldExpression>
+				</textField>
+	
+			<componentElement>
+				<reportElement x="0" y="50" width="500" height="100"
+					style="Table" />
+				<c:table
+					xmlns:c="http://jasperreports.sourceforge.net/jasperreports/components"
+					xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="TableData">
+						<dataSourceExpression>$P{TableDataSource}</dataSourceExpression>
+					</datasetRun>
+					<c:column width="100">
+						<c:columnHeader  height="30" style="TableHeader">
+							<box leftPadding="10">
+								<pen lineColor="black" />
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="90" height="30">
+								</reportElement>
+								<textFieldExpression class="java.lang.String"><![CDATA[$F{yearOrMonth}]]></textFieldExpression>
+							</textField>
+						</c:columnHeader>
+						<c:columnFooter height="15" style="TableFooter">
+							<box leftPadding="10">
+								<pen lineColor="black" />
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="15">
+								</reportElement>
+								<textElement verticalAlignment="Middle">
+									<font size="12" isBold="true" />
+								</textElement>
+								<text><![CDATA[平均]]></text>
+							</staticText>
+						</c:columnFooter>
+						<c:detailCell height="15">
+							<box leftPadding="10">
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="90" height="15">
+								</reportElement>
+								<textFieldExpression class="java.lang.String"><![CDATA[$F{materialQulityType}]]></textFieldExpression>
+							</textField>
+						</c:detailCell>
+					</c:column>
+					
+					
+					<c:column width="100">
+						<c:columnHeader  height="30" style="TableHeader">
+							<box leftPadding="10">
+								<pen lineColor="black" />
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30">
+								</reportElement>
+								<textElement verticalAlignment="Middle">
+									<font size="12" isBold="true" />
+								</textElement>
+								<text><![CDATA[水分]]></text>
+							</staticText>
+						</c:columnHeader>
+						<c:columnFooter height="15" style="TableFooter">
+							<box leftPadding="10">
+								<pen lineColor="black" />
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="15">
+								</reportElement>
+								<textElement verticalAlignment="Middle">
+									<font size="12" isBold="true" />
+								</textElement>
+								<text><![CDATA[14.12]]></text>
+							</staticText>
+						</c:columnFooter>
+						<c:detailCell height="15">
+							<box leftPadding="10">
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="90" height="15">
+								</reportElement>
+								<textFieldExpression class="java.lang.Double"><![CDATA[$F{moisture}]]></textFieldExpression>
+							</textField>
+						</c:detailCell>
+					</c:column>
+					
+					<c:column width="100">
+						<c:columnHeader  height="30" style="TableHeader">
+							<box leftPadding="10">
+								<pen lineColor="black" />
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30">
+								</reportElement>
+								<textElement verticalAlignment="Middle">
+									<font size="12" isBold="true" />
+								</textElement>
+								<text><![CDATA[杂质]]></text>
+							</staticText>
+						</c:columnHeader>
+						<c:columnFooter height="15" style="TableFooter">
+							<box leftPadding="10">
+								<pen lineColor="black" />
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="15">
+								</reportElement>
+								<textElement verticalAlignment="Middle">
+									<font size="12" isBold="true" />
+								</textElement>
+								<text><![CDATA[3.12]]></text>
+							</staticText>
+						</c:columnFooter>
+						<c:detailCell height="15">
+							<box leftPadding="10">
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="90" height="15">
+								</reportElement>
+								<textFieldExpression class="java.lang.Double"><![CDATA[$F{impurity}]]></textFieldExpression>
+							</textField>
+						</c:detailCell>
+					</c:column>
+					
+					<c:column width="100">
+						<c:columnHeader  height="30" style="TableHeader">
+							<box leftPadding="10">
+								<pen lineColor="black" />
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30">
+								</reportElement>
+								<textElement verticalAlignment="Middle">
+									<font size="12" isBold="true" />
+								</textElement>
+								<text><![CDATA[容重]]></text>
+							</staticText>
+						</c:columnHeader>
+						<c:columnFooter height="15" style="TableFooter">
+							<box leftPadding="10">
+								<pen lineColor="black" />
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="15">
+								</reportElement>
+								<textElement verticalAlignment="Middle">
+									<font size="12" isBold="true" />
+								</textElement>
+								<text><![CDATA[6.12]]></text>
+							</staticText>
+						</c:columnFooter>
+						<c:detailCell height="15">
+							<box leftPadding="10">
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="90" height="15">
+								</reportElement>
+								<textFieldExpression class="java.lang.Double"><![CDATA[$F{density}]]></textFieldExpression>
+							</textField>
+						</c:detailCell>
+					</c:column>
+					
+					<c:column width="100">
+						<c:columnHeader  height="30" style="TableHeader">
+							<box leftPadding="10">
+								<pen lineColor="black" />
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30">
+								</reportElement>
+								<textElement verticalAlignment="Middle">
+									<font size="12" isBold="true" />
+								</textElement>
+								<text><![CDATA[不完善粒]]></text>
+							</staticText>
+						</c:columnHeader>
+						<c:columnFooter height="15" style="TableFooter">
+							<box leftPadding="10">
+								<pen lineColor="black" />
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="15">
+								</reportElement>
+								<textElement verticalAlignment="Middle">
+									<font size="12" isBold="true" />
+								</textElement>
+								<text><![CDATA[6.12]]></text>
+							</staticText>
+						</c:columnFooter>
+						<c:detailCell height="15">
+							<box leftPadding="10">
+								<bottomPen lineWidth="0.5" />
+							</box>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="90" height="15">
+								</reportElement>
+								<textFieldExpression class="java.lang.Double"><![CDATA[$F{damage}]]></textFieldExpression>
+							</textField>
+						</c:detailCell>
+					</c:column>
+				</c:table>
+			</componentElement>
+		</band>
+	</title>
+</jasperReport>

@@ -19,16 +19,12 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 public class StatelessEntityService extends EntityService {
-	protected Logger logger = LoggerFactory.getLogger(getClass());
-
     @PersistenceContext(unitName = "pu")
     public EntityManager entityManager;
 
-	public StatelessEntityService(){
-	}
-
     @PostConstruct
     private void initEntityManager(){
+        logger.info("初始化 EntityManager");
         this.setEntityManager(entityManager);
     }
 }

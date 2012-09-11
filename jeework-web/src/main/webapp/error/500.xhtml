@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<f:view contentType="text/html">
+<h:head>
+	<title>500错误</title>
+	<link href="#{request.contextPath}/template/css/default.css" rel="stylesheet" type="text/css" />
+</h:head>
+<h:body>
+
+<p:panel styleClass="panel1">
+	<h:form prependId="false">
+		<f:facet name="header">
+			<img class="header_title_img" src="#{request.contextPath}/images/icons/tabTitle.gif" alt="" />
+			<h:outputLabel value="500错误页面" />
+		</f:facet>
+		<table cellspacing="0" cellpadding="0" width="482" align="center"
+			border="0">
+			<tr>
+				<td><img src="#{request.contextPath}/images/error/500.png"  alt="" /></td>
+			</tr>
+		</table>
+		</h:form>
+</p:panel>
+
+</h:body>
+</f:view>
+</html>

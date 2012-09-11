@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets" template="/template/template.xhtml">
+
+    <ui:define name="title">商品查询</ui:define>
+
+    <ui:define name="content">
+        <f:metadata>
+			<f:event type="preRenderView" listener="#{productBean.initConversation}" />
+		</f:metadata>
+
+		<p:panel styleClass="panel1">      
+			<f:facet name="header">
+				<img src="#{request.contextPath}/images/icons/tabTitle.gif" alt=""/>
+                <h:outputLabel value="商品查询    |    "/>
+                <h:outputLink value="#{request.contextPath}/faces/product/input.xhtml">
+                	<h:outputText value="添加商品"/>
+                </h:outputLink>
+        	</f:facet>
+                
+			<h:form id="productForm" prependId="false">
+				<p:fieldset>
+                    <h:panelGrid columns="4">
+						商品名称：<p:inputText value="#{productBean.filterMap['LIKES_name']}"/>
+						商品类别：<h:selectOneMenu  value="#{productBean.filterMap['EQS_category']}" >
+									 <f:selectItem itemLabel="--请选择--" itemValue="" />
+  									 <f:selectItems value="#{productBean.productCategoryList}" />
+        						  </h:selectOneMenu>
+     					商品价格：<p:inputText value="#{productBean.filterMap['EQN_smallPrice']}"/> 
+     							  <h:outputText value="~" style="text-align:center; display: block;" /> 
+     							  <p:inputText value="#{productBean.filterMap['EQN_bigPrice']}"/>
+                    </h:panelGrid>
+                    <h:panelGrid style="width:100%; text-align: right;">
+                    	<p:commandButton id="btn_product_Search" actionListener="#{productBean.search}" update="productDataPanel" value="查询" icon="ui-icon ui-icon-search"/>
+                    </h:panelGrid>
+                </p:fieldset>
+                <br/>
+				
+				<p:outputPanel id="productDataPanel">
+                	<p:dataTable id="productTable" var="product" value="#{productBean.lazyModel}" paginator="true" rows="10"  paginatorPosition="bottom"
+                                 paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport} "
+								 currentPageReportTemplate="{currentPage}/{totalPage}"
+                              	 selectionMode="single" onRowSelectUpdate="display">
+						<f:facet name="header">商品列表</f:facet>
+
+                    	<p:column headerText="商品名称">
+                        	<h:outputText value="#{product.name}"/>
+                    	</p:column>
+
+                    	<p:column headerText="商品编码">
+                        	<h:outputText value="#{product.code}"/>
+                   		</p:column>
+
+                    	<p:column headerText="商品类别">
+                       		<h:outputText value="#{dictBean.queryCode(product.category)}"/>
+                    	</p:column>
+
+                    	<p:column headerText="商品价格">
+                        	<h:outputText value="#{product.price}"/>
+                   		</p:column>
+
+                    	<p:column headerText="生产日期">
+                        	<h:outputText value="#{product.productingDate}">
+                        		<f:convertDateTime pattern="yyyy-MM-dd" />
+                        	</h:outputText>
+                    	</p:column>
+
+                    	<p:column headerText="是否有货">
+                    		<h:outputText value="#{product.available ? '是' : '否' }"/>
+                    	</p:column>
+
+          				<p:column headerText="商品描述">
+                        	<h:outputText value="#{product.description}"/>
+                    	</p:column>
+
+                    	<p:column headerText="操作" style="width:120px; text-align:center;">
+ 							<p:commandButton update=":dialogForm:productInput, :dialogForm:msg" oncomplete="productDialog.show()" icon="ui-icon ui-icon-search" title="查看">
+								<f:param name="readOnly" value="true"/>			
+                            	<f:setPropertyActionListener value="#{product}" target="#{productBean.instance}"/>
+                        	</p:commandButton>
+
+                        	<p:commandButton update=":dialogForm:productInput, :dialogForm:msg" oncomplete="productDialog.show()" icon="ui-icon ui-icon-pencil" title="修改">
+								<f:param name="readOnly" value="false" />							
+                            	<f:setPropertyActionListener value="#{product}" target="#{productBean.instance}"/>
+                        	</p:commandButton>
+
+                        	<p:commandButton update=":dialogForm:productInput, :dialogForm:msg" oncomplete="confirmation.show()" icon="ui-icon ui-icon-close" title="删除">
+                            	<f:setPropertyActionListener value="#{product}" target="#{productBean.instance}"/>
+                        	</p:commandButton>
+                   		</p:column>
+                	</p:dataTable>
+				</p:outputPanel>
+			</h:form>
+			
+			<h:form id="dialogForm" prependId="false">
+                <p:dialog header="商品信息" widgetVar="productDialog" id="productDlg" resizable="false" width="550" modal="true"  >
+                	<p:messages id="msg" />
+                    <h:panelGrid id="productInput" columns="2" cellpadding="5" cellspacing="1" styleClass="style1"
+                                 rowClasses="row1,row2" columnClasses="column1,column2" footerClass="footer1">
+                                 
+						<ui:include src="input-item.xhtml" />
+						
+                        <f:facet name="footer">
+                            <p:commandButton id="btn_product_Save" actionListener="#{productBean.save}" value="保存" update=":productForm:productDataPanel, msg" rendered="#{!param.readOnly}"
+                                	oncomplete="handleComplete(productDialog,args);"  icon="ui-icon ui-icon-disk"/>
+							<p:commandButton value="#{param.readOnly ? '关闭' : '取消'}" onclick="productDialog.hide()" icon="ui-icon ui-icon-cancel"/>
+                        </f:facet>
+                    </h:panelGrid>
+                </p:dialog>
+
+                <p:confirmDialog header="信息确认" message="是否删除此商品" severity="alert" widgetVar="confirmation">
+                    <p:commandButton update=":productForm:productDataPanel" value="确定" oncomplete="confirmation.hide()" actionListener="#{productBean.delete}"/>
+                    <p:commandButton value="取消" onclick="confirmation.hide()" type="button"/>
+                </p:confirmDialog>
+        	</h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>
+

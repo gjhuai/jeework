@@ -3,6 +3,7 @@ package com.wcs.base.controller;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.wcs.base.conf.SystemConfiguration;
 import com.wcs.base.entity.BaseEntity;
 
@@ -37,8 +38,8 @@ public class BaseBean<T extends BaseEntity>  extends AbstractBaseBean<T> {
     
     public void deleteEntity() {
         T entity = getInstance();
-        entity.setDefunctInd(true);
-        entityService.update(entity);
+        entity.setDefunctInd('Y');
+        entityWriter.update(entity);
     }
 	
 	/**
@@ -46,7 +47,7 @@ public class BaseBean<T extends BaseEntity>  extends AbstractBaseBean<T> {
 	 * @return
 	 */
 	public boolean isManaged() {
-		return entityService.isManaged(getInstance());
+		return entityWriter.isManaged(getInstance());
 	}
 
 

@@ -1,0 +1,334 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.wcs</groupId>
+	<artifactId>jeework</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>jeework-core</module>
+		<module>jeework-generator</module>
+		<module>jeework-web</module>
+	</modules>
+
+	<repositories>
+		<repository>
+			<id>prime-repo</id>
+			<name>PrimeFaces Repository</name>
+			<url>http://repository.primefaces.org</url>
+		</repository>
+
+		<repository>
+			<id>wcs-central</id>
+			<name>WCS Central Repository</name>
+			<url>http://10.229.14.10:8080/nexus/content/groups/public</url>
+		</repository>
+	</repositories>
+
+	<properties>
+		<slf4j.version>1.6.1</slf4j.version>
+		<targetJdk>1.6</targetJdk>
+		<sourceEncoding>UTF-8</sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- jeework -->
+			<dependency>
+				<groupId>com.wcs</groupId>
+				<artifactId>jeework-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!-- Java EE -->
+			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-api</artifactId>
+				<version>6.0</version>
+				<scope>provided</scope>
+			</dependency>
+
+    	    <dependency>
+    	        <groupId>org.jboss.spec</groupId>
+    	        <artifactId>jboss-javaee-6.0</artifactId>
+    	        <version>1.0.0.Final</version>
+    	        <type>pom</type>
+    	        <scope>provided</scope>
+    	    </dependency>
+            
+			<!-- JSF 2.1 -->
+			<dependency>
+				<groupId>javax.faces</groupId>
+				<artifactId>jsf-api</artifactId>
+				<version>2.1</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- Primefaces 3.0.1 -->
+			<dependency>
+				<groupId>org.primefaces</groupId>
+				<artifactId>primefaces</artifactId>
+				<version>3.3.1</version>
+			</dependency>
+
+			<!-- OpenJPA -->
+			<dependency>
+				<groupId>org.apache.openjpa</groupId>
+				<artifactId>openjpa-all</artifactId>
+				<version>2.2.0</version>
+			</dependency>
+
+			<!-- utils -->
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.1</version>
+			</dependency>
+
+			<dependency>
+				<artifactId>commons-collections</artifactId>
+				<groupId>commons-collections</groupId>
+				<version>3.2.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>1.5</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>1.2.2</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>1.4</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>1.8.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-configuration</groupId>
+				<artifactId>commons-configuration</artifactId>
+				<version>1.7</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>13.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>ch.qos.cal10n</groupId>
+				<artifactId>cal10n-api</artifactId>
+				<version>0.7.4</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>3.6</version>
+			</dependency>
+
+			<!-- shiro -->
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-core</artifactId>
+				<version>1.2.0</version>
+			</dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-web</artifactId>
+                <version>1.2.0</version>
+            </dependency>
+			<dependency>
+				<groupId>org.apache.shiro</groupId>
+				<artifactId>shiro-faces</artifactId>
+				<version>2.0-SNAPSHOT</version>
+			</dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-ehcache</artifactId>
+                <version>1.2.0</version>
+            </dependency>            
+
+			<!-- logger -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-ext</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.16</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.8.2</version>
+			</dependency>
+			<!-- Arquilian Test -->
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>1.0.2.Final</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+                        
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<!-- compiler plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>${targetJdk}</source>
+					<target>${targetJdk}</target>
+				</configuration>
+			</plugin>
+			<!-- test plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12</version>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+						<include>**/Test*.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+			<!-- resources plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.3</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<!-- eclipse plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<sourceExcludes>
+						<sourceExclude>**/.svn/</sourceExclude>
+					</sourceExcludes>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+				</configuration>
+			</plugin>
+
+			<!-- war plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<!-- <configuration> <warName>${project.artifactId}</warName> </configuration> -->
+			</plugin>
+			<!-- jar plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+            
+            <!-- source attach plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                	<execution>
+                		<id>attach-sources</id>
+                		<goals>
+                			<goal>jar</goal>
+                		</goals>
+                	</execution>
+                </executions>
+            </plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>hibernate3-maven-plugin</artifactId>
+				<version>2.2</version>
+
+				<dependencies>
+					<dependency>
+						<groupId>postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>9.1-901.jdbc4</version>
+					</dependency>
+				</dependencies>
+
+				<configuration>
+					<components>
+						<component>
+							<name>hbm2ddl</name>
+							<implementation>annotationconfiguration</implementation>
+						</component>
+					</components>
+					<componentProperties>
+						<configurationfile>/src/main/resources/hibernate.cfg.xml</configurationfile>
+						<outputfilename>schema.sql</outputfilename>
+
+						<jdk5>true</jdk5>
+						<ejb3>true</ejb3>
+
+						<drop>true</drop>
+						<create>true</create>
+						<export>false</export>
+						<format>true</format>
+					</componentProperties>
+				</configuration>
+
+				<executions>
+					<execution>
+						<!--<phase>install</phase> -->
+						<goals>
+							<goal>hbm2ddl</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

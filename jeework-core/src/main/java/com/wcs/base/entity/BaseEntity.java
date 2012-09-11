@@ -1,13 +1,12 @@
 package com.wcs.base.entity;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 /**
@@ -25,80 +24,82 @@ import javax.persistence.Transient;
 public abstract class BaseEntity extends IdEntity {
 	private static final long serialVersionUID = 1L;
 
-	private Date createdDatetime;
+    @Column(name = "created_by", length = 50)
+	private String createdBy;   //邮件地址 @ 之前的部分，同AD账号(AD_ACCOUNT)
+    
+    @Column(name = "created_datetime")
+	private Timestamp createdDatetime;
+    
+    @Column(name = "defunct_ind")
+	private Character defunctInd = 'N';   // Y表示失效/逻辑删除，N表示有效
+    
+    @Column(name = "updated_by", length = 50)
+	private String updatedBy;   //邮件地址 @ 之前的部分，同AD账号(AD_ACCOUNT)
+    
+    @Column(name = "updated_datetime")
+	private Timestamp updatedDatetime;
 
-    private String createdBy;
-
-	private Date updatedDatetime;
-
-    private String updatedBy;
-
-    private Boolean defunctInd;
-
-    @Temporal(TemporalType.TIMESTAMP)
-	@Column(name="CREATED_DATETIME")
-    public Date getCreatedDatetime() {
-        return createdDatetime;
-    }
-
-    @Column(name="CREATED_BY", length=30)
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="UPDATED_DATETIME")
-    public Date getUpdatedDatetime() {
-        return updatedDatetime;
-    }
-
-    @Column(name="UPDATED_BY", length=30)
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    @Column(name="DEFUNCT_IND",columnDefinition="smallint")
-    public Boolean isDefunctInd() {
-        return defunctInd;
-    }
-
-    public void setDefunctInd(Boolean defunctInd) {
-        this.defunctInd = defunctInd;
-    }
-
-    public void setUpdatedDatetime(Date updatedDatetime) {
-        this.updatedDatetime = updatedDatetime;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public void setCreatedDatetime(Date createdDatetime) {
-        this.createdDatetime = createdDatetime;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    @Transient
-	public abstract String getDisplayText();
-
-	@PrePersist
-	public void initTimeStamps() {
-		// we do this for the purpose of the demo, this lets us create our own
-		// creation dates. Typically we would just set the createdOn field.
-		if (createdDatetime == null) {
-			createdDatetime = new Date();
-		}
-		updatedDatetime = createdDatetime;
-        defunctInd = false;
+	
+	public String getCreatedBy() {
+		return this.createdBy;
 	}
 
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	
+	public Timestamp getCreatedDatetime() {
+		return this.createdDatetime;
+	}
+
+	public void setCreatedDatetime(Timestamp createdDatetime) {
+		this.createdDatetime = createdDatetime;
+	}
+
+	
+	public Character getDefunctInd() {
+		return this.defunctInd;
+	}
+
+	public void setDefunctInd(Character defunctInd) {
+		this.defunctInd = defunctInd;
+	}
+
+	
+	public String getUpdatedBy() {
+		return this.updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	
+	public Timestamp getUpdatedDatetime() {
+		return this.updatedDatetime;
+	}
+
+	public void setUpdatedDatetime(Timestamp updatedDatetime) {
+		this.updatedDatetime = updatedDatetime;
+	}
+
+	@Transient
+	public abstract String getDisplayText();
+	
+	@PrePersist
+	public void initTimeStamps() {
+		if (createdDatetime == null) {
+			Timestamp ts = new Timestamp(new Date().getTime()); 
+			createdDatetime = ts;
+		}
+		updatedDatetime = createdDatetime;
+        defunctInd = 'N';
+	}
+	
 	@PreUpdate
 	public void updateTimeStamp() {
-		updatedDatetime = new Date();
+		updatedDatetime = new Timestamp(new Date().getTime());
 	}
 
 }

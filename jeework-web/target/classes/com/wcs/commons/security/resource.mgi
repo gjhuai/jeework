@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <CommunicationClass
+        name="com.wcs.commons.security.service.ResourceService" x="45" y="302">
+        <Association
+            destinationClassName="com.wcs.commons.security.service.ResourceCache"
+            endpointName="resourceCache" kind="Simple"/>
+        <Communication destinationClassName="com.wcs.commons.security.service.ResourceCache"/>
+    </CommunicationClass>
+    <CommunicationClass
+        name="com.wcs.commons.security.controller.ResourceBean" x="51" y="64">
+        <Association
+            destinationClassName="com.wcs.commons.security.service.ResourceCache"
+            endpointName="resourceCache" kind="Simple"/>
+        <Association
+            destinationClassName="com.wcs.commons.conf.WebappConfig"
+            endpointName="config" kind="Simple"/>
+        <Association
+            destinationClassName="com.wcs.commons.security.service.ResourceService"
+            endpointName="resourceService" kind="Simple"/>
+        <Communication destinationClassName="com.wcs.commons.security.service.ResourceService"/>
+        <Communication destinationClassName="com.wcs.commons.conf.WebappConfig"/>
+        <Communication destinationClassName="com.wcs.commons.security.service.ResourceCache"/>
+    </CommunicationClass>
+    <CommunicationClass name="com.wcs.commons.conf.WebappConfig" x="419" y="39">
+        <Association
+            destinationClassName="com.wcs.commons.security.service.ResourceCache"
+            endpointName="resourceCache" kind="Simple"/>
+        <Communication destinationClassName="com.wcs.commons.security.service.ResourceCache"/>
+    </CommunicationClass>
+    <CommunicationClass
+        name="com.wcs.commons.security.service.ResourceCache" x="336" y="132"/>
+</ClassDiagram>

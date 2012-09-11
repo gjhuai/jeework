@@ -936,7 +936,17 @@ public abstract class ObjectUtils extends org.apache.commons.lang.ObjectUtils {
 		return true;
 	}
 
-	public static boolean isValidNumber(Integer number) {
+	/**
+	 * 参数 number 是否为正值
+	 */
+	public static boolean isPositiveValue(Integer number) {
+		return (null != number && 0 < number);
+	}
+
+	/**
+	 * 参数 number 是否为正值
+	 */
+	public static boolean isPositiveValue(Double number) {
 		if (null != number && 0 < number) {
 			return true;
 		} else {
@@ -944,7 +954,7 @@ public abstract class ObjectUtils extends org.apache.commons.lang.ObjectUtils {
 		}
 	}
 
-	public static boolean isValidNumber(Double number) {
+	public static boolean isPositiveValue(Long number) {
 		if (null != number && 0 < number) {
 			return true;
 		} else {
@@ -952,15 +962,7 @@ public abstract class ObjectUtils extends org.apache.commons.lang.ObjectUtils {
 		}
 	}
 
-	public static boolean isValidNumber(Long number) {
-		if (null != number && 0 < number) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public static boolean isValidNumber(Short number) {
+	public static boolean isPositiveValue(Short number) {
 		if (null != number && 0 < number) {
 			return true;
 		} else {

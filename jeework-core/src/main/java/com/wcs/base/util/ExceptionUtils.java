@@ -10,8 +10,8 @@ package com.wcs.base.util;
 import java.io.IOException;
 
 import com.wcs.base.conf.SystemConfiguration;
-import com.wcs.base.exception.ExceptionKeyMessage;
-import com.wcs.base.exception.ExceptionMessage;
+import com.wcs.base.exception.message.ExceptionKeyMessage;
+import com.wcs.base.exception.message.ExceptionMessage;
 
 public class ExceptionUtils extends org.apache.commons.lang.exception.ExceptionUtils{
 

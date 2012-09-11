@@ -1,0 +1,308 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>jeework</artifactId>
+		<groupId>com.wcs</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<artifactId>jeework-web</artifactId>
+	<packaging>war</packaging>
+
+	<repositories>
+		<repository>
+			<id>prime-repo</id>
+			<name>PrimeFaces Repository</name>
+			<url>http://repository.primefaces.org</url>
+		</repository>
+
+		<repository>
+			<id>wcs-central</id>
+			<name>WCS Central Repository</name>
+			<url>http://10.229.14.10:8080/nexus/content/groups/public</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<!-- jeework -->
+		<dependency>
+			<groupId>com.wcs</groupId>
+			<artifactId>jeework-core</artifactId>
+		</dependency>
+
+		<!-- Java EE -->
+<!-- 		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<optional>true</optional>
+		</dependency> -->
+				
+		<!-- JSF 2.1 -->
+<!-- 		<dependency>
+			<groupId>javax.faces</groupId>
+			<artifactId>jsf-api</artifactId>
+			<optional>true</optional>
+		</dependency> -->
+
+		<!-- OpenJPA -->
+<!--  		<dependency>
+			<groupId>org.apache.openjpa</groupId>
+			<artifactId>openjpa-all</artifactId>
+			<optional>true</optional>
+		</dependency> -->
+			
+		<!-- Primefaces -->
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+		</dependency>
+
+		<!-- utils -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+
+		<dependency>
+			<artifactId>commons-collections</artifactId>
+			<groupId>commons-collections</groupId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.cal10n</groupId>
+			<artifactId>cal10n-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+		</dependency>
+
+		<!-- shiro web -->
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-faces</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-ehcache</artifactId>
+        </dependency>
+
+		<!-- logger -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-ext</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+
+		<!-- Arquillian Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+		</dependency>
+		<!-- import maven dependencies into arquillian -->
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<finalName>jeework-web</finalName>
+		<plugins>
+
+		</plugins>
+	</build>
+
+	<profiles>
+     <profile>
+            <id>openjpa</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <dependencies>
+	            
+                <dependency>
+					<groupId>org.apache.openjpa</groupId>
+					<artifactId>openjpa-all</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                
+                <dependency>
+					<groupId>javax</groupId>
+					<artifactId>javaee-api</artifactId>
+					<optional>true</optional>
+				</dependency>
+
+            </dependencies>
+            <properties>
+                <jpaProviderClass>org.apache.openjpa.persistence.PersistenceProviderImpl</jpaProviderClass>
+            </properties>
+            <build>
+                <plugins>
+               
+					<!-- <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>openjpa-enhance</id>
+                                <phase>process-classes</phase>
+                                <configuration>
+                                    <tasks>
+                                        <taskdef name="openjpac" classname="org.apache.openjpa.ant.PCEnhancerTask"
+                                                 classpathref="maven.compile.classpath"/>
+                                        <openjpac enforcePropertyRestrictions="false">
+                                            <classpath refid="maven.compile.classpath"/>
+                                        </openjpac>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin> -->               
+
+                <!-- 
+                    <plugin>
+			            <groupId>org.apache.openjpa</groupId>
+			            <artifactId>openjpa-maven-plugin</artifactId>
+			            <version>2.2.0-SNAPSHOT</version>
+			            <configuration>
+			                <includes>**/entity/*.class</includes>
+			                <excludes>**/entity/XML*.class</excludes>
+			                <addDefaultConstructor>true</addDefaultConstructor>
+			                <enforcePropertyRestrictions>true</enforcePropertyRestrictions>
+			            </configuration>
+			            <executions>
+			                <execution>
+			                    <id>enhancer</id>
+			                    <phase>process-classes</phase>
+			                    <goals>
+			                        <goal>enhance</goal>
+			                    </goals>
+			                </execution>
+			            </executions>
+			            <dependencies>
+			                <dependency>
+			                    <groupId>org.apache.openjpa</groupId>
+			                    <artifactId>openjpa</artifactId>
+			                    <version>2.2.0</version>
+			                </dependency>
+			            </dependencies>
+			        </plugin>
+			         -->
+                </plugins>
+            </build>
+        </profile>
+        
+		<profile>
+			<id>arquillian-glassfish-remote</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<dependencies>
+			    <dependency>
+			        <groupId>org.jboss.spec</groupId>
+			        <artifactId>jboss-javaee-6.0</artifactId>
+			        <type>pom</type>
+			    </dependency>				
+				<dependency>
+					<groupId>org.jboss.arquillian.container</groupId>
+					<artifactId>arquillian-glassfish-remote-3.1</artifactId>
+					<version>1.0.0.CR3</version>
+				</dependency>
+				<dependency>
+				    <groupId>org.jboss.weld</groupId>
+				    <artifactId>weld-core</artifactId>
+				    <version>1.1.5.Final</version>
+				    <scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
+		    <id>arquillian-glassfish-embedded</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		    <dependencies>
+		        <dependency>
+		            <groupId>org.jboss.arquillian.container</groupId>
+		            <artifactId>arquillian-glassfish-embedded-3.1</artifactId>
+		            <version>1.0.0.CR3</version>
+		            <scope>test</scope>
+		        </dependency>
+		        <dependency>
+		            <groupId>org.glassfish.main.extras</groupId>
+		            <artifactId>glassfish-embedded-all</artifactId>
+		            <version>3.1.2</version>
+		            <scope>provided</scope>
+		        </dependency>
+				<dependency>
+				  <groupId>mysql</groupId>
+				  <artifactId>mysql-connector-java</artifactId>
+				  <version>5.1.15</version>
+				  <scope>test</scope>
+				</dependency>
+		    </dependencies>
+		</profile>
+
+	</profiles>	
+</project>

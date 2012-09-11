@@ -1,0 +1,50 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+        <h:outputText value="姓名："/>
+        <h:panelGroup>
+        	<p:inputText id="teacher_name" value="#{teacherBean.instance.name}" required="true" requiredMessage="人员的姓名不能为空！" maxlength="50"/>
+        	<h:outputText style="color:red;" value="  *" />
+        </h:panelGroup>
+        
+        <h:outputText value="出生日期："/>
+        <p:calendar id="teacher_birthday" value="#{teacherBean.instance.birthday}" />
+
+        <h:outputText value="性别："/>
+        <h:selectOneMenu id="teacher_sex" value="#{teacherBean.instance.sex}" >
+        	<f:selectItem itemLabel="--请选择--" itemValue="" />
+        	<f:selectItems value="#{teacherBean.sexList}" />
+        </h:selectOneMenu>
+        
+        <h:outputText value="国籍：" />  
+        <h:selectOneRadio id="teacher_nationality" value="#{teacherBean.instance.nationality}" styleClass="selectOneRadio">
+            <f:selectItem itemLabel="中国" itemValue="中国" />  
+            <f:selectItem itemLabel="美国" itemValue="美国" />  
+            <f:selectItem itemLabel="西班牙" itemValue="西班牙" />  
+        </h:selectOneRadio>  
+        
+        <h:outputText value="VIP：" />
+        <h:selectBooleanCheckbox id="teacher_vip" value="#{teacherBean.instance.vip}" styleClass="selectBooleanCheckbox"/>
+        
+        <h:outputText value="电话："/>
+        <p:inputText id="teacher_phone" value="#{teacherBean.instance.phone}" maxlength="20"/>
+
+        <h:outputText value="地址："/>
+        <p:inputText id="teacher_address" value="#{teacherBean.instance.address}"/>
+
+        <h:outputText value="邮箱："/>
+        <h:panelGroup>
+        	<p:inputText id="teacher_email" value="#{teacherBean.instance.email}"  maxlength="50">
+       			<f:validateRegex pattern=".+[@].+[.].+" />
+        	</p:inputText>
+        	<h:outputText style="color:red;" value="  *" />
+        </h:panelGroup>
+        
+        <h:outputText value="备注："/>
+        <p:inputTextarea id="teacher_remarks" value="#{teacherBean.instance.remarks}" styleClass="textarea_420" maxHeight="120" maxLength="500"/>
+
+</ui:composition>

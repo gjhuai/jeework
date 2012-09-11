@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/template/template.xhtml">
+
+	<ui:define name="title">人员查询(lazy)</ui:define>
+	<ui:define name="content">
+		<h:form id="teacherForm">
+			<p:panel styleClass="panel1">
+				<f:facet name="header">
+					<img src="#{request.contextPath}/images/icons/tabTitle.gif" alt="" />
+					<h:outputLabel value="人员查询    |    " />
+					<h:outputLink
+						value="#{request.contextPath}/faces/teacher/input.xhtml">
+						<h:outputText value="添加人员" />
+					</h:outputLink>
+				</f:facet>
+
+				<p:fieldset>
+					<h:panelGrid columns="4">
+				    	姓名：<h:inputText value="#{teacherBean.filterMap['LIKES_name']}" />				       
+				                        性别：<h:selectOneMenu
+							value="#{teacherBean.filterMap['EQS_sex']}">
+							<f:selectItem itemLabel="--请选择--" itemValue="" />
+							<f:selectItems value="#{teacherBean.sexList}" />
+						</h:selectOneMenu>
+				       	 出生日期：<p:calendar
+							value="#{teacherBean.filterMap['EQD_startBirthday']}" /> ~ <p:calendar
+							value="#{teacherBean.filterMap['EQD_endBirthday']}" />
+					</h:panelGrid>
+					<h:panelGrid style="width:100%; text-align: right;">
+						<p:commandButton id="btn_teacher_Search" value="查询"
+							actionListener="#{teacherBean.search}" update="teacherDataPanel"
+							icon="ui-icon ui-icon-search" />
+					</h:panelGrid>
+				</p:fieldset>
+				<br />
+
+				<p:outputPanel id="teacherDataPanel">
+					<p:dataTable id="teacherTable" var="teacher"
+						value="#{teacherBean.lazyModel}" paginator="true" rows="10"
+						paginatorPosition="bottom" rowKey="#{teacherBean.instance.id}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport} "
+						currentPageReportTemplate="{currentPage}/{totalPage}"
+						selectionMode="single" onRowSelectUpdate="display">
+						<f:facet name="header">人员列表</f:facet>
+						<p:column headerText="姓名">
+							<h:outputText value="#{teacher.name}" />
+						</p:column>
+						<p:column headerText="出生日期">
+							<h:outputText value="#{teacher.birthday}">
+								<f:convertDateTime pattern="yyyy-MM-dd" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="性别">
+							<h:outputText value="#{dictBean.queryCode(teacher.sex)}" />
+						</p:column>
+						<p:column headerText="国籍">
+							<h:outputText value="#{teacher.nationality}" />
+						</p:column>
+						<p:column headerText="VIP">
+							<h:outputText value="#{teacher.vip ? '是' : '否'}" />
+						</p:column>
+						<p:column headerText="电话">
+							<h:outputText value="#{teacher.phone}" />
+						</p:column>
+						<p:column headerText="地址">
+							<h:outputText value="#{teacher.address}" />
+						</p:column>
+						<p:column headerText="邮箱">
+							<h:outputText value="#{teacher.email}" />
+						</p:column>
+						<p:column headerText="备注">
+							<h:outputText value="#{teacher.remarks}" />
+						</p:column>
+						<p:column headerText="创建时间">
+							<h:outputText value="#{teacher.createdDatetime}" >
+								<f:convertDateTime pattern="yyyy-MM-dd HH:MM" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="操作" style="width:120px; text-align:center;">
+							<p:commandButton id="btn_teacher_View"
+								update=":teacherForm:display" oncomplete="teacherDialog.show()"
+								icon="ui-icon ui-icon-search" title="查看">
+								<f:setPropertyActionListener value="#{teacher}"
+									target="#{teacherBean.instance}" />
+								<f:setPropertyActionListener value="#{false}"
+									target="#{teacherBean.editMode}" />
+							</p:commandButton>
+							<p:commandButton id="btn_teacher_Edit"
+								update=":teacherForm:display" oncomplete="teacherDialog.show()"
+								icon="ui-icon ui-icon-pencil" title="修改">
+								<f:setPropertyActionListener value="#{teacher}"
+									target="#{teacherBean.instance}" />
+								<f:setPropertyActionListener value="#{true}"
+									target="#{teacherBean.editMode}" />
+							</p:commandButton>
+							<p:commandButton id="btn_teacher_Delete"
+								update=":teacherForm:display" oncomplete="confirmation.show()"
+								icon="ui-icon ui-icon-close" title="删除">
+								<f:setPropertyActionListener value="#{teacher}"
+									target="#{teacherBean.instance}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
+
+				<p:dialog header="人员信息" widgetVar="teacherDialog" resizable="false"
+					id="authorDlg" width="600" showEffect="fade" hideEffect="explode"
+					modal="true">
+					<p:messages id="msg" />
+					<h:panelGrid id="display" columns="2" cellpadding="5"
+						cellspacing="1" styleClass="style1" rowClasses="row1,row2"
+						columnClasses="column1,column2" footerClass="footer1">
+						<h:outputText value="姓名：" />
+						<h:panelGroup>
+							<h:outputText value="#{teacherBean.instance.name}"
+								rendered="#{!teacherBean.editMode}" />
+							<p:inputText value="#{teacherBean.instance.name}"
+								rendered="#{teacherBean.editMode}" required="true"
+								requiredMessage="人员的姓名不能为空！" />
+							<h:outputText style="color:red;" value="  *"
+								rendered="#{teacherBean.editMode}" />
+						</h:panelGroup>
+
+						<h:outputText value="出生日期：" />
+						<h:panelGroup>
+							<h:outputText value="#{teacherBean.instance.birthday}"
+								style="font-weight:bold" rendered="#{!teacherBean.editMode}" >
+								<f:convertDateTime pattern="yyyy-MM-dd" />
+							</h:outputText>
+							<p:calendar value="#{teacherBean.instance.birthday}"
+								rendered="#{teacherBean.editMode}" label="Model" />
+						</h:panelGroup>
+
+						<h:outputText value="性别：" />
+						<h:panelGroup>
+							<h:outputText
+								value="#{dictBean.queryCode(teacherBean.instance.sex)}"
+								style="font-weight:bold" rendered="#{!teacherBean.editMode}" />
+							<h:selectOneMenu value="#{teacherBean.instance.sex}"
+								rendered="#{teacherBean.editMode}" label="Model">
+								<f:selectItem itemLabel="--请选择--" itemValue="" />
+								<f:selectItems value="#{teacherBean.sexList}" />
+							</h:selectOneMenu>
+						</h:panelGroup>
+
+						<h:outputText value="国籍：" />
+						<h:panelGroup>
+							<h:outputText value="#{teacherBean.instance.nationality}"
+								style="font-weight:bold" rendered="#{!teacherBean.editMode}" />
+							<h:selectOneRadio value="#{teacherBean.instance.nationality}"
+								rendered="#{teacherBean.editMode}" styleClass="selectOneRadio">
+								<f:selectItem itemLabel="中国" itemValue="中国" />
+								<f:selectItem itemLabel="美国" itemValue="美国" />
+								<f:selectItem itemLabel="西班牙" itemValue="西班牙" />
+							</h:selectOneRadio>
+						</h:panelGroup>
+
+						<h:outputText value="VIP：" />
+						<h:panelGroup>
+							<h:outputText value="#{teacherBean.instance.vip ? '是' : '否'}"
+								style="font-weight:bold" rendered="#{!teacherBean.editMode}" />
+							<h:selectBooleanCheckbox value="#{teacherBean.instance.vip}"
+								rendered="#{teacherBean.editMode}"
+								styleClass="selectBooleanCheckbox" />
+						</h:panelGroup>
+
+						<h:outputText value="电话：" />
+						<h:panelGroup>
+							<h:outputText value="#{teacherBean.instance.phone}"
+								style="font-weight:bold" rendered="#{!teacherBean.editMode}" />
+							<p:inputText value="#{teacherBean.instance.phone}"
+								rendered="#{teacherBean.editMode}" label="Model" />
+						</h:panelGroup>
+
+						<h:outputText value="地址：" />
+						<h:panelGroup>
+							<h:outputText value="#{teacherBean.instance.address}"
+								style="font-weight:bold" rendered="#{!teacherBean.editMode}" />
+							<p:inputText value="#{teacherBean.instance.address}"
+								rendered="#{teacherBean.editMode}" label="Model" />
+						</h:panelGroup>
+
+						<h:outputText value="邮箱：" />
+						<h:panelGroup>
+							<h:outputText value="#{teacherBean.instance.email}"
+								style="font-weight:bold" rendered="#{!teacherBean.editMode}" />
+							<h:panelGroup>
+								<p:inputText value="#{teacherBean.instance.email}"
+									rendered="#{teacherBean.editMode}" label="Model" maxlength="50">
+									<f:validateRegex pattern=".+[@].+[.].+" />
+								</p:inputText>
+								<h:outputText style="color:red;" value="  *"
+									rendered="#{teacherBean.editMode}" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:outputText value="备注：" />
+						<h:panelGroup>
+							<h:outputText value="#{teacherBean.instance.remarks}"
+								style="font-weight:bold" rendered="#{!teacherBean.editMode}" />
+							<p:inputTextarea value="#{teacherBean.instance.remarks}"
+								rendered="#{teacherBean.editMode}" styleClass="textarea_420"
+								maxHeight="120" />
+						</h:panelGroup>
+
+						<h:outputText value="创建时间：" rendered="#{!teacherBean.editMode}" />
+						<h:panelGroup>
+							<h:outputText value="#{teacherBean.instance.createdDatetime}" style="font-weight:bold" rendered="#{!teacherBean.editMode}" >
+								<f:convertDateTime pattern="yyyy-MM-dd HH:MM" />
+							</h:outputText>
+						</h:panelGroup>
+
+						<f:facet name="footer">
+							<p:outputPanel layout="block" style="text-align:center">
+								<p:commandButton id="btn_teacher_Save" value="保存"
+									actionListener="#{teacherBean.save}"
+									update="teacherDataPanel, msg" rendered="#{teacherBean.editMode}"
+									oncomplete="handleComplete(teacherDialog, args);" title="保存"
+									icon="ui-icon ui-icon-disk" />
+								<p:commandButton id="btn_teacher_Cancel"
+									value="#{teacherBean.editMode ? '取消' : '关闭'}"
+									onclick="teacherDialog.hide()" title="取消"
+									icon="ui-icon ui-icon-cancel" />
+							</p:outputPanel>
+						</f:facet>
+					</h:panelGrid>
+				</p:dialog>
+
+				<p:confirmDialog message="是否删除此人员" header="信息确认" severity="alert"
+					widgetVar="confirmation">
+					<p:commandButton id="btn_teacher_Confirm" value="确定"
+						actionListener="#{teacherBean.delete}" update="teacherDataPanel"
+						oncomplete="confirmation.hide()" />
+					<p:commandButton id="btn_confirmDialog_Cancel" value="取消"
+						onclick="confirmation.hide()" type="button" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+

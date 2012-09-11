@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/tr/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	template="/template/template.xhtml">
+	
+	<ui:define name="title">添加人员</ui:define>
+    <ui:define name="content">
+        <h:form  id="formInputTeacher" >
+            <p:panel styleClass="panel1">
+                <f:facet name="header">
+                    <img src="#{request.contextPath}/images/calculator_edit.png" alt=""/>
+                    <h:outputLabel value="添加人员    |    "/>
+                    <h:outputLink value="#{request.contextPath}/faces/teacher/list.xhtml">
+                        <h:outputText value="人员查询"/>
+                    </h:outputLink>
+                </f:facet>
+                
+                <p:messages id="msg_teacher_name" />   
+                <h:inputHidden value="#{teacherBean.instance.id}"/>
+
+                <h:panelGrid columns="2" cellpadding="5" cellspacing="1" styleClass="style1" rowClasses="row1,row2" columnClasses="column1,column2" footerClass="footer1">
+                    
+                    <ui:include src="input-item.xhtml"/>
+
+                    <f:facet name="footer">
+                        <p:commandButton id="btn_author_Save" action="#{teacherBean.save}" value="保存" icon="ui-icon ui-icon-disk" ajax="false" title="保存" />
+						<p:commandButton value="取消" icon="ui-icon ui-icon-cancel" title="取消"/>
+                    </f:facet>
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

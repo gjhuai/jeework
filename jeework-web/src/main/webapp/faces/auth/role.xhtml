@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/template/template.xhtml"
+	xmlns:shiro="http://shiro.apache.org/tags">
+
+	<ui:define name="title">角色查询</ui:define>
+	<ui:define name="styleAndScript"></ui:define>
+	<ui:define name="content">
+	
+		<h:form id="roleTableForm" prependId="false">
+			<p:panel styleClass="panel1">
+				<f:facet name="header">
+					<img src="#{request.contextPath}/images/icons/tabTitle.gif" alt="" />
+					<h:outputLabel value="角色管理  " />
+					<div class="header_title_right">
+						<img src="#{request.contextPath}/images/icons/shortcuts.gif" alt="" />
+						<p:commandLink value="添加角色"
+							update=":frmInputRole:grdInputRoleDetail, :frmInputRole:msgInput"
+							oncomplete="dlgInputRole.show()" action="#{roleBean.toAdd}"/>
+					</div>
+				</f:facet>
+				
+				<p:outputPanel id="roleTablePanel">
+					<p:messages id="msgMain"/>
+					<p:dataTable  id="resultTable" value="#{roleBean.roles}" var="role" emptyMessage="#{msgs.dataTable_empty}"
+							rows="10" paginatorPosition="bottom" rowIndexVar="index"  paginator="true"
+							rowStyleClass="#{index mod 2 == 1 ? 'changeColor' : null}" style="margin-top: 5px;"
+							paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport} "
+							currentPageReportTemplate="{currentPage}/{totalPages}" rowKey="#{role.id}" selectionMode="single">
+
+						<f:facet name="header">角色列表</f:facet>
+						
+						<p:column headerText="角色名" style="width:200px"><h:outputText value="#{role.name}" /></p:column>
+						<p:column headerText="角色编码" style="width:200px"><h:outputText value="#{role.code}" /></p:column>
+						<p:column headerText="描述"><h:outputText value="#{role.description}" /></p:column>
+						<p:column headerText="状态" style="width:100px">
+							<h:outputText value="#{role.defunctInd.equals('Y') ? '失效' : '生效'}" />
+						</p:column>
+						
+						<p:column headerText="操作" styleClass="operating_90">
+							<p:commandButton update=":frmInputRole:grdInputRoleDetail" 
+									oncomplete="dlgInputRole.show()" icon="ui-icon ui-icon-pencil" title="编辑">
+								<f:setPropertyActionListener value="#{role}" target="#{roleBean.instance}" />
+								<f:setPropertyActionListener value="EDIT" target="#{roleBean.opMode}" />
+							</p:commandButton>
+
+							<p:commandButton oncomplete="confirmation.show()" icon="ui-icon ui-icon-close" title="删除">
+								<f:setPropertyActionListener value="#{role}" target="#{roleBean.instance}" />
+							</p:commandButton>
+
+							<p:commandButton action="#{resourceBean.toAllocResources(role)}" title="分配资源"
+									oncomplete="role_resource_dialog.show();" icon="ui-icon ui-icon-person"
+									update=":dlgAllocRes">
+								<f:setPropertyActionListener value="#{role}" target="#{roleBean.instance}" />
+							</p:commandButton>
+							
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
+
+				<p:confirmDialog message="是否删除此角色" modal="true" header="信息确认"
+					severity="alert" widgetVar="confirmation">
+					<p:commandButton action="#{roleBean.delete}" update=":roleTableForm:roleTablePanel"
+						value="确定" icon="ui-icon ui-icon-check" oncomplete="confirmation.hide()"/>
+					<p:commandButton value="取消" onclick="confirmation.hide()"
+						type="button" />
+				</p:confirmDialog>
+				
+			</p:panel>
+		</h:form>
+
+		<h:form prependId="false" id="frmInputRole">
+			
+			<p:dialog header="添加角色" widgetVar="dlgInputRole" modal="true" resizable="false" width="270" height="130">
+
+				<p:outputPanel id="pnlInputRole">
+					<p:messages id="msgInput" showDetail="true" showSummary="true" autoUpdate="true"/>
+					
+					<h:panelGrid id="grdInputRoleDetail" columns="2">
+						<h:outputLabel value="角色名称：" />
+						<h:column>
+							<p:inputText id="name" value="#{roleBean.instance.name}"
+								required="true" maxlength="50" requiredMessage="角色名称必须填写" />
+							<span style="color: red">*</span>
+						</h:column>
+						
+						<h:outputLabel value="角色编号：" />
+						<h:column>
+							<p:inputText id="code" value="#{roleBean.instance.code}"
+								required="true" maxlength="50" requiredMessage="角色名称必须填写" />
+							<span style="color: red">*</span>
+						</h:column>
+						
+						<h:outputLabel value="描述：" />
+						<h:column>
+							<p:inputText id="description" value="#{roleBean.instance.description}"/>
+						</h:column>
+						
+						<f:facet name="footer">
+							<p:commandButton action="#{roleBean.edit}" value="修改" rendered="#{roleBean.opMode=='EDIT'}"
+		                        update=":roleTableForm:roleTablePanel" async="true"
+		                        oncomplete="handleComplete(dlgInputRole,args);" icon="ui-icon ui-icon-disk" />
+		                        
+							<p:commandButton id="roleSave" action="#{roleBean.add}" rendered="#{roleBean.opMode=='ADD'}"
+								oncomplete="handleComplete(dlgInputRole,args);" async="true"
+								update=":roleTableForm:roleTablePanel"
+								value="保存" icon="ui-icon ui-icon-disk" title="保存" />
+								
+							<p:commandButton value="取消" id="roleAddCanel" onclick="dlgInputRole.hide()" type="button" />
+						</f:facet>
+
+					</h:panelGrid>
+				</p:outputPanel>
+
+			</p:dialog>
+		</h:form>
+
+	<p:dialog id="role_resource_id" widgetVar="role_resource_dialog"
+		resizable="false" width="380" height="400" header="角色权限分配"
+		modal="true">
+		<p:outputPanel id="dlgAllocRes">
+		<h:form prependId="false" id="role_resource_form">
+			<p:messages autoUpdate="true" showDetail="true" showSummary="true"/>
+			
+			<p:tree value="#{resourceBean.root}" var="node" id="resTree" selectionMode="checkbox" 
+							selection="#{resourceBean.selectedNodes}" style="width: 96%;">
+				<p:treeNode>
+					<h:outputText value="#{node.name}"/>
+				</p:treeNode>
+			</p:tree>
+
+			<div style="text-align: center; margin-top: 5px;">
+				<p:commandButton value="确定" action="#{resourceBean.allocResources(roleBean.instance)}" 
+					update=":dlgAllocRes" oncomplete="handleComplete(role_resource_dialog,args);"
+					icon="ui-icon ui-icon-disk" style="margin-right: 5px;"/>
+				<p:commandButton type="button" value="关闭" icon="ui-icon ui-icon-cancel"
+					onclick="role_resource_dialog.hide();" />
+			</div>
+		</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	
+	</ui:define>
+
+</ui:composition>

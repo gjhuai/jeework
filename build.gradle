@@ -23,14 +23,21 @@ configure(allprojects) {
     targetCompatibility=1.6
 
     slf4jLog4jVersion = '1.6.1'
+    arquillianVersion = "1.0.2.Final"
     //project.ext["slf4jLog4jVersion"] = '1.5.10'
+
     
+
     def localMavenRepo = new File('d:/repo').toURL().toString()
+    def arquillianVersion = "1.0.2.Final"
 
     configurations {
         provided
         testCompile.extendsFrom provided
         compile.transitive = true
+
+        compileOnly
+        glassfishEmbeddedTestRuntime { extendsFrom testRuntime }
     }
 
     [compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:none']
@@ -58,7 +65,7 @@ configure(allprojects) {
     }
 
     dependencies {
-		compile("commons-lang:commons-lang:2.6")
+		compile("org.apache.commons:commons-lang3:3.1")
         compile "commons-codec:commons-codec:1.5"
         compile "commons-collections:commons-collections:3.2.1"
  		compile "commons-configuration:commons-configuration:1.7"
@@ -66,7 +73,7 @@ configure(allprojects) {
 		compile "commons-io:commons-io:1.4"
 		compile "commons-beanutils:commons-beanutils:1.8.0"
 		compile "commons-digester:commons-digester:1.7"
-		compile "com.google.guava:guava:r09"
+		compile "com.google.guava:guava:13.0"
         compile "hirondelle:date4j:1.2.0"
 		compile "com.cedarsoft.serialization:jdom:1.0.3"
 		compile "ch.qos.cal10n:cal10n-api:0.7.4"
@@ -75,18 +82,37 @@ configure(allprojects) {
         compile "com.alibaba:fastjson:1.1.15"
         compile "org.apache.poi:poi:3.6"
 
-        compile "javax:javaee-api:6.0"
-        compile "javax.faces:jsf-api:2.0"
+        compileOnly "javax:javaee-api:6.0"
+        //compile "javax.faces:jsf-api:2.0"
         compile "org.primefaces:primefaces:3.1.1"
 		
 		compile "org.slf4j:slf4j-api:${slf4jLog4jVersion}"
 		compile "org.slf4j:slf4j-ext:${slf4jLog4jVersion}"
 		compile "org.slf4j:slf4j-log4j12:${slf4jLog4jVersion}"
 
-        testCompile "junit:junit:4.9"
+        testCompile "junit:junit:4.8.2"
         //testCompile "org.easymock:easymock:2.5.1"
         //testCompile "org.hamcrest:hamcrest-all:1.1"
         //testCompile "org.jboss.arquillian.junit:arquillian-junit-container:1.0.0.CR5"
+
+        //testCompile "org.jboss.arquillian:arquillian-junit:${arquillianVersion}"
+
+        testCompile "org.jboss.arquillian.junit:arquillian-junit-container:${arquillianVersion}"
+        testCompile "org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven:1.0.0-beta-7"
+
+        glassfishEmbeddedTestRuntime group: 'org.jboss.arquillian.container', name: 'arquillian-glassfish-embedded-3.1', version: '1.0.0.CR3'
+        glassfishEmbeddedTestRuntime 'org.glassfish.main.extras:glassfish-embedded-all:3.1.2'
+        glassfishEmbeddedTestRuntime group: 'mysql', name: 'mysql-connector-java', version: '5.1.15'
+
+    }
+
+    sourceSets {
+       main {
+          compileClasspath = configurations.compile + configurations.compileOnly
+       }
+       test {
+          compileClasspath = compileClasspath + configurations.compileOnly
+       }
     }
 
     // servlet-api (2.5) and tomcat-servlet-api (3.0) classpath entries should not be
@@ -97,7 +123,11 @@ configure(allprojects) {
         classpath.entries.findAll { entry -> entry.path.contains('javaee-api') }*.exported = false
         classpath.entries.findAll { entry -> entry.path.contains('jsf-api') }*.exported = false
     }
-    
+
+    task weldEmbeddedTest(type: Test) {
+       testClassesDir = sourceSets.test.classesDir
+       classpath = sourceSets.test.classes + sourceSets.main.classes + configurations.glassfishEmbeddedTestRuntime
+    }
     
 }
 
@@ -139,6 +169,7 @@ configure(subprojects) { subproject ->
         archives sourcesJar
         archives javadocJar
     }
+
 }
 
 
@@ -149,15 +180,18 @@ project('jeework-core') {
     }
 }
 
-project('jeework-security') {
-    description = 'Jeework Security'
+project('jeework-web') {
+    apply plugin: 'war'
+    //apply plugin: 'eclipse-wtp'
+    description = 'Jeework Web'
+    
     dependencies {
         compile project(":jeework-core")
-		compile "org.apache.shiro:shiro-core:1.2.0"
-		compile "org.apache.shiro:shiro-web:1.2.0"
-		compile "org.apache.shiro:shiro-ehcache:1.2.0-SNAPSHOT"
-		compile "org.apache.shiro:shiro-faces:2.0-SNAPSHOT"
-        compile "com.wcs.cas:casclient:3.2.0"
+        compile "org.apache.shiro:shiro-core:1.2.0"
+        compile "org.apache.shiro:shiro-web:1.2.0"
+        compile "org.apache.shiro:shiro-ehcache:1.2.0-SNAPSHOT"
+        compile "org.apache.shiro:shiro-faces:2.0-SNAPSHOT"
+        compile "com.wcs.cas:casclient:3.2.0"        
     }
 }
 
@@ -165,22 +199,9 @@ project('jeework-report') {
     description = 'Jeework Report'
     dependencies {
         compile project(":jeework-core")
-        compile project(":jeework-security")
         compile "net.sf.jasperreports:jasperreports:4.0.2"
 		compile "velocity:velocity:1.5"
         compile "velocity:velocity-dep:1.5"
-    }
-}
-
-project('jeework-showcase') {
-	apply plugin: 'war'
-    //apply plugin: 'eclipse-wtp'
-	
-    description = 'Jeework Showcase'
-    dependencies {
-        compile project(":jeework-core")
-        compile project(":jeework-security")
-        compile project(":jeework-report")
     }
 }
 
@@ -358,7 +379,6 @@ configure(rootProject) {
 
     task wrapper(type: Wrapper) {
         description = 'Generates gradlew[.bat] scripts'
-        gradleVersion = '1.0-milestone-9'
+        gradleVersion = '1.1'
     }
 }
-

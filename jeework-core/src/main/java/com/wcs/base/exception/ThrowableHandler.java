@@ -103,8 +103,6 @@ public class ThrowableHandler {
          * @param userMessage
          * @param throwable
          * @param logger
-         *
-         *
          */
         public static void handleThrow(String userMessage, Throwable throwable, Logger logger) {
                 throwable.printStackTrace();
@@ -116,7 +114,7 @@ public class ThrowableHandler {
                         logger.error(throwable.getMessage(), throwable);
 
 
-                throw new ServiceException(throwable);
+                throw new TransactionException(throwable);
         }
 
 

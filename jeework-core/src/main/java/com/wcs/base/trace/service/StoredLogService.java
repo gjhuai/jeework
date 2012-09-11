@@ -2,27 +2,13 @@ package com.wcs.base.trace.service;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.ConversationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import javax.ejb.Stateless;
 
-import com.wcs.base.service.StatelessEntityService;
-
-/**
- * Created by IntelliJ IDEA.
- * User: Chris
- * Date: 11-7-8
- * Time: 上午10:34
- * To change this template use File | Settings | File Templates.
- */
-@Named
-@ConversationScoped
+@Stateless
 public class StoredLogService implements Serializable {
-//    @Inject
-//	private EntityService entityService;
-	
-	@Inject
-    StatelessEntityService entityService;
+
+	private static final long serialVersionUID = 1L;
+
 
     public enum LogLevel {
                 DEBUG, INFO, WARN, ERROR, TRACE;
@@ -30,6 +16,5 @@ public class StoredLogService implements Serializable {
 
     public <T> T save(final T objectToSave){
     	return null;
-//			return entityService.create(objectToSave);
     }
 }

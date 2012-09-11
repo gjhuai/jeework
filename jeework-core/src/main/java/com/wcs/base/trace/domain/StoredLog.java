@@ -2,11 +2,6 @@ package com.wcs.base.trace.domain;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -17,16 +12,16 @@ import javax.persistence.TemporalType;
  * Time: 上午10:17
  * To change this template use File | Settings | File Templates.
  */
-@Entity
-@Table(name = "StoredLog")
+//@Entity
+//@Table(name = "StoredLog")
 public class StoredLog {
 
     private Long id;
 
    /* @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)*/
-    @Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE)
+    //@Id
+	//@GeneratedValue(strategy=GenerationType.SEQUENCE)
     public Long getId() {
         return id;
     }
@@ -38,6 +33,7 @@ public class StoredLog {
 
     private static final long serialVersionUID = -5765589801658858248L;
 
+    @Temporal(TemporalType.TIMESTAMP)
     private Date logdttm;
 
     private String logLevel;
@@ -49,7 +45,7 @@ public class StoredLog {
     private String throwAbleMessage;
 
 
-    @Temporal(TemporalType.TIMESTAMP)
+    
     public Date getLogdttm() {
         return logdttm;
     }

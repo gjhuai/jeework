@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets" template="/template/template.xhtml">
+
+	<ui:define name="title">添加商品</ui:define>
+
+	<ui:define name="content">				
+		<h:form  id="frmInputBook">
+            <p:panel styleClass="panel1">
+				<f:facet name="header">
+                    <img src="#{request.contextPath}/images/calculator_edit.png" alt=""/>
+                    <h:outputLabel value="添加商品    |    "/>
+                    <h:outputLink value="#{request.contextPath}/faces/product/list.xhtml">
+                        <h:outputText value="商品查询"/>
+                    </h:outputLink>
+                </f:facet>
+                
+                <p:messages/>    
+                 
+                <h:panelGrid columns="2" cellpadding="5" cellspacing="1" styleClass="style1" rowClasses="row1,row2" columnClasses="column1,column2" footerClass="footer1">
+
+                    <ui:include src="input-item.xhtml"/>
+
+                    <f:facet name="footer">
+                        <p:commandButton id="btn_product_Save" action="#{productBean.save}" value="保存"
+                                         icon="ui-icon ui-icon-disk" ajax="false" title="保存"/>
+
+                        <p:commandButton value="取消" icon="ui-icon ui-icon-cancel" title="取消"/>
+                    </f:facet>
+
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

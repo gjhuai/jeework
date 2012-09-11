@@ -35,7 +35,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
-import com.google.common.base.Joiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +63,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("unchecked")
 public abstract class StringUtils extends org.apache.commons.lang.StringUtils {
 	
-		final static Logger logger = LoggerFactory.getLogger(StringUtils.class);
+		Logger logger = LoggerFactory.getLogger(StringUtils.class);
 
 
         private static final String FOLDER_SEPARATOR = "/";
@@ -1206,7 +1205,7 @@ public abstract class StringUtils extends org.apache.commons.lang.StringUtils {
                         }
                 } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
-                        logger.debug("Unsupported Encoding: " + encoding);
+                        //logger.debug("Unsupported Encoding: " + encoding);
                 }
                 return strOut;
         }

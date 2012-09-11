@@ -1,0 +1,44 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+        <h:outputText value="商品名称："/>
+        <h:panelGroup>
+        	<p:inputText id="product_name" value="#{productBean.instance.name}" disabled="#{param.readOnly}" required="true" requiredMessage="商品名称不能为空！" />
+        	<h:outputText style="color:red;" value="  *" rendered="#{!param.readOnly}" />
+        </h:panelGroup>
+	
+        <h:outputText value="商品编码："/>
+        <h:panelGroup>
+        	<p:inputText id="product_code" value="#{productBean.instance.code}" disabled="#{param.readOnly}" required="true" requiredMessage="商品编码不能为空！"/>
+        	<h:outputText style="color:red;" value="  *" rendered="#{!param.readOnly}" />
+		</h:panelGroup>
+		
+        <h:outputLabel value="商品类别："/>
+        <h:panelGroup>
+        	<h:selectOneMenu id="product_category" value="#{productBean.instance.category}" disabled="#{param.readOnly}" required="true" requiredMessage="商品类别必须选择！" >
+        		<f:selectItem itemLabel="--请选择--" />
+        		<f:selectItems value="#{productBean.productCategoryList}" />
+        	</h:selectOneMenu>
+        	<h:outputText style="color:red;" value="  *" rendered="#{!param.readOnly}" />
+        </h:panelGroup>
+
+        <h:outputLabel value="商品价格：" />
+        <h:panelGroup>
+        	<p:inputText id="product_price" value="#{productBean.instance.price}" disabled="#{param.readOnly}" required="true"  requiredMessage="商品价格不能为空！"/>
+        	<h:outputText style="color:red;" value="  *" rendered="#{!param.readOnly}" />
+		</h:panelGroup>
+		
+        <h:outputLabel value="生产日期："/>
+        <p:calendar id="product_pubDate" value="#{productBean.instance.productingDate}" disabled="#{param.readOnly}"/>
+
+        <h:outputLabel value="是否还有："/>
+        <h:selectBooleanCheckbox id="product_available" value="#{productBean.instance.available}" disabled="#{param.readOnly}"/>
+
+        <h:outputLabel value="商品描述："/>
+        <p:inputTextarea id="product_description" value="#{productBean.instance.description}"  disabled="#{param.readOnly}" maxLength="1000" styleClass="textarea_420" />
+
+</ui:composition>

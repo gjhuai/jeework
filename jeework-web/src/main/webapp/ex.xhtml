@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/template/template.xhtml"
+	xmlns:shiro="http://shiro.apache.org/tags">
+	
+	<ui:define name="title">用户管理</ui:define>
+	<ui:define name="content">
+
+		<p:panel styleClass="panel1">
+			<f:facet name="header">
+				<img src="#{request.contextPath}/images/icons/tabTitle.gif" alt="" />
+				<h:outputLabel value="用户管理" />
+			</f:facet>
+			<h:form id="userForm" prependId="false">
+				<p:panel id="searchUserPanel">
+					<div>
+						<h:outputLabel value="用户账号：" />
+						<p:inputText id="adAccount" value="#{userBean.filterMap['LIKES_adAccount']}" style="width:150px;" />
+						<h:outputLabel value="姓名：" />
+						<p:inputText id="nachn" value="#{userBean.filterMap['LIKES_nachn']}" style="width:150px;" />
+						<h:outputLabel value="电话：" />
+						<p:inputText id="telno" value="#{userBean.filterMap['LIKES_telno']}" style="width:150px;" />
+					</div>
+					<div align="right">
+						<p:commandButton id="searchBtn" value="查询" action="#{userBean.list}" update="userOutputPanel" icon="ui-icon ui-icon-search" />
+						<p:commandButton id="addUserBtn" value="添加用户" oncomplete="userDialog.show()"  icon="ui-icon ui-icon-search"/>
+					</div>
+				</p:panel>
+				<p:outputPanel id="userOutputPanel">
+					<p:dataTable id="userTable" var="user" value="#{userBean.lazyModel}" paginator="true" rows="10" paginatorPosition="bottom" 
+						rowKey="#{user.id}" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport} "
+						currentPageReportTemplate="{currentPage}/{totalPages}" selectionMode="single">
+						<f:facet name="header">用户列表</f:facet>
+						<p:column headerText="姓名">
+							<h:outputText value="#{user.person.nachn}" />
+						</p:column>
+						<p:column headerText="账号">
+							<h:outputText value="#{user.adAccount}" />
+						</p:column>
+						<p:column headerText="性别">
+							<h:outputText value="#{user.person.gesch}" />
+						</p:column>
+						<p:column headerText="邮件">
+							<h:outputText value="#{user.person.email}" />
+						</p:column>
+						<p:column headerText="电话">
+							<h:outputText value="#{user.person.telno}" />
+						</p:column>
+						<p:column headerText="手机">
+							<h:outputText value="#{user.person.celno}" />
+						</p:column>
+						<p:column headerText="操作" style="width:70px; text-align:center;">
+							<p:commandButton title="删除" oncomplete="confirmation.show()" icon="ui-icon ui-icon-close">
+								<f:setPropertyActionListener value="#{user}" target="#{userBean.instance}" />
+							</p:commandButton>
+							<p:commandButton title="分配角色" action="#{roleBean.loadRoles(user)}"  update=":dialogForm:userRolesPanel"
+								oncomplete="userRoleDialog.show()"  icon="ui-icon ui-icon-wrench">
+								<f:setPropertyActionListener value="#{user}" target="#{userBean.instance}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:outputPanel>
+			</h:form>
+				
+			<h:form id="dialogForm" prependId="false">
+				<p:dialog id="userRoleDlg" header="角色分配" widgetVar="userRoleDialog" modal="true" resizable="false">
+					<h:panelGrid id="userRolesPanel" columns="1" cellpadding="5" cellspacing="1" columnClasses="column2,column0,column2,column0">
+						<p:column>
+							<span>账号：</span>
+							<p:inputText readonly="true" id="AccountId" value="#{userBean.instance.adAccount}" />
+						</p:column>
+						<p:pickList id="pickRoles" value="#{roleBean.listModel}" var="role" label="角色列表：" 
+							itemLabel="#{role.name}" itemValue="#{role}" converter="roleConverter"
+						 addLabel="添加" addAllLabel="全选" removeLabel="删除" removeAllLabel="全删" />
+						 
+						<f:facet name="footer">
+							<p:commandButton id="saveUserRoleID" action="#{roleBean.allocRoles(userBean.instance)}" 
+								value="保存" update=":userForm:userOutputPanel" oncomplete="userRoleDialog.hide()"  
+								icon="ui-icon ui-icon-disk"/>
+							<p:commandButton id="userRoleDialogBack" type="button" value="取消" onclick="userRoleDialog.hide()" icon="ui-icon ui-icon-cancel" />
+						</f:facet>
+					</h:panelGrid>
+				</p:dialog>
+				
+				<p:dialog id="userDlg" header="添加用户" widgetVar="userDialog" modal="true" resizable="false" width="600">
+					<p:panel id="pnlAddUser">
+						<div>
+							<h:outputLabel value="账号：" />
+							<p:inputText value="#{userBean.instance.adAccount}" style="width:150px;" />
+							<p:commandButton action="#{userBean.findPersons}" value="查询" update=":dialogForm:OutputPanelAddUser" icon="ui-icon ui-icon-disk"/>
+							<p:commandButton value="关闭" type="button" onclick="userDialog.hide()" icon="ui-icon ui-icon-cancel" />
+						</div>
+					</p:panel>
+					<p:outputPanel id="OutputPanelAddUser">
+						<p:dataTable id="tblAddUser" var="person" value="#{userBean.persons}" paginator="true" rows="10" paginatorPosition="bottom" 
+							rowKey="#{person.id}" paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {CurrentPageReport} "
+							currentPageReportTemplate="{currentPage}/{totalPages}" selectionMode="single">
+							<f:facet name="header">用户列表</f:facet>
+							<p:column headerText="姓名">
+								<h:outputText value="#{person.nachn}" />
+							</p:column>
+							<p:column headerText="性别" style="width:25px;">
+								<h:outputText value="#{person.gesch}" />
+							</p:column>
+							<p:column headerText="电话">
+								<h:outputText value="#{person.telno}" />
+							</p:column>
+							<p:column headerText="手机">
+								<h:outputText value="#{person.celno}" />
+							</p:column>
+							<p:column headerText="操作" style="width:40px; text-align:center;">
+								<p:commandButton title="添加" action="#{userBean.add}" icon="ui-icon ui-icon-wrench">
+									<f:setPropertyActionListener value="#{person.id}" target="#{userBean.instance.pernr}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>					
+					</p:outputPanel>
+					
+				</p:dialog>				
+				
+				<p:confirmDialog id="userDelDlg" header="信息确认" message="是否删除此用户" severity="alert" widgetVar="confirmation">
+					<p:commandButton update=":userForm:userOutputPanel" value="确定" oncomplete="confirmation.hide()" actionListener="#{userBean.delete}" />
+					<p:commandButton value="取消" onclick="confirmation.hide()" type="button" />
+				</p:confirmDialog>
+
+			</h:form>
+			
+		</p:panel>
+	</ui:define>
+</ui:composition>
+

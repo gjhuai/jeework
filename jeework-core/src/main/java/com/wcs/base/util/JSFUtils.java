@@ -68,6 +68,12 @@ public class JSFUtils {
 	    return FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 	}
 	
+	public static Map<String,Object> getApplicationMap(){
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext ec = context.getExternalContext();
+		return ec.getApplicationMap();
+	}
+	
 	public static String getRequestURI(){
 		HttpServletRequest request = getRequest();
 		return request.getRequestURI();

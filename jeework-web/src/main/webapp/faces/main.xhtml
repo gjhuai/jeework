@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://java.sun.com/jstl/core" 
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	template="/template/template.xhtml">
+	
+	<ui:define name="styleAndScript">
+		<style>
+			body{
+				background: #F1F6FA;
+			}
+			#welcome{
+				width: 100%;
+				text-align: center;
+			}
+		</style>	
+	</ui:define>
+	
+	<ui:define name="content">
+		<div id="welcome" style="width: 90%;">
+	    	<img src="#{facesContext.externalContext.requestContextPath}/images/bj.jpg"/>
+	    </div>
+	</ui:define>
+</ui:composition>
+

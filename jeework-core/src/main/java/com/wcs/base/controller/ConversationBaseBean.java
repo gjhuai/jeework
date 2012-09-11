@@ -3,11 +3,11 @@ package com.wcs.base.controller;
 import javax.enterprise.context.Conversation;
 import javax.inject.Inject;
 
-import com.wcs.base.entity.BaseEntity; 
+import com.wcs.base.entity.BaseEntity;
 
 public abstract class ConversationBaseBean<T extends BaseEntity> 
 		extends BaseBean<T> implements IBaseBean {
-
+	private static final long serialVersionUID = 1L;
 	@Inject
 	private Conversation conversation;
 	

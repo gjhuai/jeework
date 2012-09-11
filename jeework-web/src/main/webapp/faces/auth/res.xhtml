@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://java.sun.com/jstl/core" 
+	xmlns:h="http://java.sun.com/jsf/html" 
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	template="/template/template.xhtml">
+
+	<ui:define name="title">资源参数维护</ui:define>
+	
+	<ui:define name="content">
+
+<h:form id="resourceForm" prependId="false">
+    <p:messages id="resMsg" />
+
+    <p:outputPanel id="resTablePanel">
+        <p:treeTable id="resTable" value="#{resourceBean.root}" var="res" selection="#{resourceBean.selectedNode}" selectionMode="single">
+            <f:facet name="header">Resource Viewer</f:facet>
+
+            <p:column style="width:100px" headerText="Name">
+                <h:outputText value="#{res.name}" />
+            </p:column>
+
+            <p:column style="width:80px" headerText="Code">
+                <h:outputText value="#{res.code}" />
+            </p:column>
+
+            <p:column style="width:30px" headerText="SeqNo">
+                <h:outputText value="#{res.seqNo}" />
+            </p:column>
+
+            <p:column style="width:100px" headerText="URI">
+                <h:outputText value="#{res.uri}" />
+            </p:column>
+
+            <p:column headerText="操作" styleClass="operating_90">
+                <p:commandButton update=":resInputForm:resEditPanel" oncomplete="resDialog.show()" title="修改" icon="ui-icon ui-icon-pencil">
+                    <f:setPropertyActionListener value="#{res}" target="#{resourceBean.selectedResource}" />
+                    <f:setPropertyActionListener value="EDIT" target="#{resourceBean.opMode}" />
+                </p:commandButton>
+                
+                <p:commandButton oncomplete="confirmation.show()" title="删除" icon="ui-icon ui-icon-close" >
+                    <f:setPropertyActionListener value="#{res}" target="#{resourceBean.selectedResource}" />
+                </p:commandButton>
+
+                <p:commandButton update=":resInputForm:resDialog1" oncomplete="resDialog.show()" title="添加子节点" action="#{resourceBean.toAdd}" icon="ui-icon ui-icon-key">
+                    <f:setPropertyActionListener value="#{res}" target="#{resourceBean.selectedResource}" />
+                    <f:setPropertyActionListener value="ADD" target="#{resourceBean.opMode}" />
+                </p:commandButton>
+                
+            </p:column>
+        </p:treeTable>
+    </p:outputPanel>
+
+    <p:confirmDialog message="是否删除此资源" modal="true" header="信息确认"
+        severity="alert" widgetVar="confirmation">
+        <p:commandButton update=":resourceForm:resTable" value="确定"
+            icon="ui-icon ui-icon-check" oncomplete="confirmation.hide()"
+            action="#{resourceBean.delete}" />
+        <p:commandButton value="取消" onclick="confirmation.hide()"
+            type="button" />
+    </p:confirmDialog>
+
+</h:form>
+
+<h:form id="resInputForm" prependId="false">
+    <p:dialog header="Resource Detail" showEffect="fade" id="resDialog1" widgetVar="resDialog" modal="true">
+        <p:messages id="resEditPanel_msg"/>
+        <p:outputPanel id="resEditPanel">
+            <h:panelGrid  columns="2" cellpadding="5" rendered="#{not empty resourceBean.selectedResource}">
+                <h:outputLabel for="name" value="Name: " />
+                <p:inputText id="name" value="#{resourceBean.selectedResource.name}" maxlength="20" required="true" requiredMessage="名称必填" style="font-weight:bold" />
+
+                <h:outputLabel for="Code" value="Code: " />
+                <p:inputText id="Code" value="#{resourceBean.selectedResource.code}" maxlength="50" required="true" requiredMessage="编号必填" style="font-weight:bold" />
+
+                <h:outputLabel for="SeqNo" value="SeqNo: " />
+                <p:inputText id="SeqNo" value="#{resourceBean.selectedResource.seqNo}" required="true" requiredMessage="序号必填"  style="font-weight:bold" />
+
+                <h:outputLabel for="uri" value="URI: " />
+                <p:inputText id="uri" value="#{resourceBean.selectedResource.uri}" maxlength="200" style="font-weight:bold" />
+
+                <h:outputLabel for="type" value="Type: " />
+                <h:selectOneMenu id="type" value="#{resourceBean.selectedResource.type}">
+                    <f:selectItems value="#{resourceBean.resourceTypeValues}"/>
+                </h:selectOneMenu>
+
+                <f:facet name="footer">
+                    <p:commandButton action="#{resourceBean.edit}" value="修改" rendered="#{resourceBean.opMode=='EDIT'}"
+                        id="btnEdit" update=":resourceForm:resTablePanel" async="true"
+                        oncomplete="handleComplete(resDialog,args);" icon="ui-icon ui-icon-disk" />
+                    <p:commandButton action="#{resourceBean.add}" value="添加" rendered="#{resourceBean.opMode=='ADD'}"
+                                     id="btnAdd" update=":resourceForm:resTablePanel,:resourceForm:resMsg, :resInputForm:resEditPanel_msg" async="true"
+                                     oncomplete="handleComplete(resDialog,args);" icon="ui-icon ui-icon-disk" />
+                    <p:commandButton value="取消" onclick="resDialog.hide()" type="button"
+                        id="btnCanel" icon="ui-icon ui-icon-cancel" title="取消" />
+                </f:facet>
+            </h:panelGrid>
+        </p:outputPanel>
+    </p:dialog>
+</h:form>
+		
+		<!-- 删除弹出确认 -->
+	</ui:define>
+</ui:composition>
+
